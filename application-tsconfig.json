@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "files": ["src/structure/describable-application.ts"],
+  "compilerOptions": {
+    "module": "es2022"
+  }
+}

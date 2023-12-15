@@ -4,11 +4,15 @@
 import fs from 'fs';
 import * as esbuild from 'esbuild';
 import DescribableApplication from '../../src/structure/describable-application';
+import * as fileUtil from '../../src/util/file-util';
 
 jest.mock('../../src/util/cwd', () => '/base');
 
 jest.mock('fs');
 const fsMock = jest.mocked(fs);
+
+jest.mock('../../src/util/file-util');
+const fileUtilMock = jest.mocked(fileUtil);
 
 jest.mock('esbuild');
 const esBuildMock = jest.mocked(esbuild);
@@ -79,7 +83,7 @@ describe('Describable application module', () => {
 
     describe('build', () => {
         beforeEach(() => {
-            fsMock.readFileSync.mockReturnValue('{{title}}');
+            fsMock.readFileSync.mockReturnValue('{{title}}, {{scriptSource}}');
         });
 
         test('throws error if app has no pages', async () => {
@@ -96,9 +100,9 @@ describe('Describable application module', () => {
             app.addPage('/test', './page.js');
             await app.build();
 
-            expect(fsMock.writeFileSync).toHaveBeenCalledWith(
+            expect(fileUtilMock.writeFileSafe).toHaveBeenCalledWith(
                 '/base/bundle/test/index.html',
-                'test',
+                'test, index.js',
             );
             expect(esBuildMock.build).toHaveBeenCalledWith({
                 entryPoints: ['/base/page.js'],
@@ -117,9 +121,9 @@ describe('Describable application module', () => {
                 .addPage('/test', './page.js');
             await app.build();
 
-            expect(fsMock.writeFileSync).toHaveBeenCalledWith(
+            expect(fileUtilMock.writeFileSafe).toHaveBeenCalledWith(
                 '/base/output/test/index.html',
-                'test',
+                'test, index.js',
             );
             expect(esBuildMock.build).toHaveBeenCalledWith({
                 entryPoints: ['/base/page.js'],

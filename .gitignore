@@ -2,3 +2,7 @@
 node_modules
 
 src/**/*.js
+test/**/*.js
+
+sample/simple-html/bundle
+sample/simple-html/**/*.js

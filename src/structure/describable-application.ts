@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import cwd from '../util/cwd';
 import * as esbuild from 'esbuild';
+import { writeFileSafe } from '../util/file-util';
 
 export default class DescribableApplication {
     private readonly title: string;
@@ -57,9 +58,11 @@ export default class DescribableApplication {
             const location = this.pageMap.get(url);
             const outputLocation = path.join(cwd, this.outputDirName, url);
 
-            fs.writeFileSync(
+            writeFileSafe(
                 path.join(outputLocation, 'index.html'),
-                template.replace('{{title}}', this.title),
+                template
+                    .replace('{{title}}', this.title)
+                    .replace('{{scriptSource}}', 'index.js'),
             );
 
             return esbuild.build({

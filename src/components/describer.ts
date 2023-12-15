@@ -1,37 +1,58 @@
+import { DescriberAttributes } from '../models/describer-attributes';
+
 export class Describer {
     private readonly tagName: string;
-    private readonly elem: HTMLElement;
+    private attributes: DescriberAttributes;
 
     constructor(tagName: string) {
         this.tagName = tagName;
-
-        this.elem = document.createElement(this.tagName);
+        this.attributes = {
+            classNames: [],
+            attributes: {},
+        };
     }
 
     id(value: string) {
-        this.elem.id = value;
+        this.attributes.id = value;
         return this;
     }
 
     classNames(...values: string[]) {
-        this.elem.classList.add(...values);
+        this.attributes.classNames.push(...values);
         return this;
     }
 
     attribute(attributeMap: { [key: string]: string }) {
         Object.entries(attributeMap).forEach(([key, value]) => {
-            this.elem.setAttribute(key, value);
+            this.attributes.attributes[key] = value;
         });
 
         return this;
     }
 
     text(text: string) {
-        this.elem.textContent = text;
+        this.attributes.text = text;
         return this;
     }
 
-    build() {
-        return this.elem;
+    static build(describer: Describer) {
+        const elem = document.createElement(describer.tagName);
+        const describerAttributes = describer.attributes;
+
+        if (describerAttributes.id) {
+            elem.id = describerAttributes.id;
+        }
+        if (describerAttributes.text) {
+            elem.textContent = describerAttributes.text;
+        }
+
+        describerAttributes.classNames.forEach((className) =>
+            elem.classList.add(className),
+        );
+        Object.entries(describerAttributes.attributes).forEach(([key, value]) =>
+            elem.setAttribute(key, value),
+        );
+
+        return elem;
     }
 }

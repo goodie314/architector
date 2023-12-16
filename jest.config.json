@@ -1,5 +1,6 @@
 {
   "preset": "ts-jest",
   "testEnvironment": "jsdom",
-  "clearMocks": true
+  "clearMocks": true,
+  "moduleFileExtensions": ["ts", "js"]
 }

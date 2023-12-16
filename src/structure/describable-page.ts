@@ -1,11 +1,10 @@
-import DescribableComponent from '../components/describable-component';
 import { Describer } from '../components/describer';
 
 export default class DescribablePage {
-    private readonly rootComponent: DescribableComponent;
+    private readonly rootComponent: Describer;
     private applicationContainer: Element;
 
-    constructor(rootComponent: DescribableComponent) {
+    constructor(rootComponent: Describer) {
         this.rootComponent = rootComponent;
         this.applicationContainer = document.body;
     }
@@ -16,7 +15,7 @@ export default class DescribablePage {
     }
 
     render() {
-        const app = Describer.build(this.rootComponent.compose());
+        const app = Describer.build(this.rootComponent);
         this.applicationContainer.append(app);
     }
 }

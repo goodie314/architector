@@ -28,7 +28,7 @@ describe('Describer module', () => {
             expect(elem.classList.contains('test')).toBeTruthy();
         });
 
-        test('sets multiple class namesw on the final element', () => {
+        test('sets multiple class names on the final element', () => {
             const elem = Describer.build(
                 new Describer('div').classNames('test1', 'test2'),
             );
@@ -52,12 +52,47 @@ describe('Describer module', () => {
         });
     });
 
-    describe('test', () => {
+    describe('text', () => {
         test('sets text value of element', () => {
             const elem = Describer.build(
                 new Describer('div').text('Hello world'),
             );
             expect(elem.textContent).toEqual('Hello world');
+        });
+    });
+
+    describe('append', () => {
+        test('appends children to the element', () => {
+            const elem = Describer.build(
+                new Describer('div').append(
+                    new Describer('div').id('elem1'),
+                    new Describer('div').id('elem2'),
+                ),
+            );
+
+            expect(elem.children.length).toEqual(2);
+            expect(elem.children.item(0).id).toEqual('elem1');
+            expect(elem.children.item(1).id).toEqual('elem2');
+        });
+
+        test('multiple appends appends the correct number of children', () => {
+            const children = Array(5)
+                .fill(0)
+                .map((n, i) => new Describer('div').id(`elem${i}`));
+
+            const elem = Describer.build(
+                new Describer('div')
+                    .append(...children.slice(0, 2))
+                    .append(children[2])
+                    .append(...children.slice(3)),
+            );
+
+            expect(elem.children.length).toEqual(5);
+            Array(5)
+                .fill(0)
+                .forEach((n, i) =>
+                    expect(elem.children.item(i).id).toEqual(`elem${i}`),
+                );
         });
     });
 });

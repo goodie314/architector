@@ -9,6 +9,7 @@ export class Describer {
         this.attributes = {
             classNames: [],
             attributes: {},
+            children: [],
         };
     }
 
@@ -35,6 +36,11 @@ export class Describer {
         return this;
     }
 
+    append(...components: Describer[]) {
+        this.attributes.children.push(...components);
+        return this;
+    }
+
     static build(describer: Describer) {
         const elem = document.createElement(describer.tagName);
         const describerAttributes = describer.attributes;
@@ -51,6 +57,9 @@ export class Describer {
         );
         Object.entries(describerAttributes.attributes).forEach(([key, value]) =>
             elem.setAttribute(key, value),
+        );
+        describerAttributes.children.forEach((child) =>
+            elem.appendChild(Describer.build(child)),
         );
 
         return elem;

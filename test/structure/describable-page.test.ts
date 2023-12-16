@@ -3,7 +3,7 @@ import SimpleHtmlComponent from '../components/test-components/simple-html-compo
 
 describe('Describable page module', () => {
     test('successfully render app in the document body', () => {
-        new DescribablePage(new SimpleHtmlComponent()).render();
+        new DescribablePage(new SimpleHtmlComponent().compose()).render();
 
         expect(document.body.childNodes.length).toEqual(1);
         expect(document.body.firstElementChild).toMatchSnapshot();

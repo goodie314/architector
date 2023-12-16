@@ -107,4 +107,24 @@ describe('Describer module', () => {
             expect(element.id).toEqual('test-element');
         });
     });
+
+    describe('addEventListener', () => {
+        test('should throw when target is not an Element', () => {
+            const describer = new Describer('button').click(() => {
+                fail('should not reach here');
+            });
+
+            Describer.build(describer).dispatchEvent(new Event('test'));
+        });
+        test('click event', (done) => {
+            const describer = new Describer('button')
+                .id('testButton')
+                .click((elem) => {
+                    expect(elem.id).toEqual('testButton');
+                    done();
+                });
+
+            Describer.build(describer).click();
+        });
+    });
 });

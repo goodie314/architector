@@ -1,5 +1,6 @@
 import { DescriberAttributes } from '../models/describer-attributes';
 import ElementRef from '../util/element-ref';
+import { EventHandler } from '../types/event-handler';
 
 export class Describer {
     private readonly tagName: string;
@@ -12,6 +13,7 @@ export class Describer {
             classNames: [],
             attributes: {},
             children: [],
+            handlers: {},
         };
     }
 
@@ -50,6 +52,15 @@ export class Describer {
         return this;
     }
 
+    eventHandler(eventName: string, handler: EventHandler) {
+        this.attributes.handlers[eventName] = handler;
+        return this;
+    }
+
+    click(eventHandler: EventHandler) {
+        return this.eventHandler('click', eventHandler);
+    }
+
     static build(describer: Describer) {
         const elem = document.createElement(describer.tagName);
         const describerAttributes = describer.attributes;
@@ -64,11 +75,25 @@ export class Describer {
         describerAttributes.classNames.forEach((className) =>
             elem.classList.add(className),
         );
+
         Object.entries(describerAttributes.attributes).forEach(([key, value]) =>
             elem.setAttribute(key, value),
         );
+
         describerAttributes.children.forEach((child) =>
             elem.appendChild(Describer.build(child)),
+        );
+
+        Object.entries(describerAttributes.handlers).forEach(
+            ([eventName, eventHandler]) =>
+                elem.addEventListener(eventName, (event) => {
+                    if (!(event.currentTarget instanceof Element)) {
+                        throw new Error(
+                            'Internal error. It should not be possible to attach an event listener here where an element is not the target',
+                        );
+                    }
+                    return eventHandler(event.currentTarget, event);
+                }),
         );
 
         if (describer.elementRef) {

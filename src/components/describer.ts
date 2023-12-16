@@ -37,7 +37,9 @@ export class Describer {
     }
 
     append(...components: Describer[]) {
-        this.attributes.children.push(...components);
+        components.forEach((component) =>
+            this.attributes.children.push(component),
+        );
         return this;
     }
 

@@ -1,8 +1,10 @@
 import { DescriberAttributes } from '../models/describer-attributes';
+import ElementRef from '../util/element-ref';
 
 export class Describer {
     private readonly tagName: string;
     private attributes: DescriberAttributes;
+    private elementRef: ElementRef;
 
     constructor(tagName: string) {
         this.tagName = tagName;
@@ -43,6 +45,11 @@ export class Describer {
         return this;
     }
 
+    ref(elementRef: ElementRef) {
+        this.elementRef = elementRef;
+        return this;
+    }
+
     static build(describer: Describer) {
         const elem = document.createElement(describer.tagName);
         const describerAttributes = describer.attributes;
@@ -63,6 +70,10 @@ export class Describer {
         describerAttributes.children.forEach((child) =>
             elem.appendChild(Describer.build(child)),
         );
+
+        if (describer.elementRef) {
+            describer.elementRef.set(elem);
+        }
 
         return elem;
     }

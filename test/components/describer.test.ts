@@ -1,4 +1,5 @@
 import { Describer } from '../../src/components/describer';
+import ElementRef from '../../src/util/element-ref';
 
 describe('Describer module', () => {
     describe('constructor', () => {
@@ -93,6 +94,17 @@ describe('Describer module', () => {
                 .forEach((n, i) =>
                     expect(elem.children.item(i).id).toEqual(`elem${i}`),
                 );
+        });
+    });
+
+    describe('ref', () => {
+        test('attach ref to element', async () => {
+            const ref = new ElementRef();
+            const describer = new Describer('div').id('test-element').ref(ref);
+
+            Describer.build(describer);
+            const element = await ref.get();
+            expect(element.id).toEqual('test-element');
         });
     });
 });

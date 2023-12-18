@@ -2,6 +2,7 @@ import { Blueprint } from '../../src/blueprints/blueprint';
 import ElementRef from '../../src/blueprints/utils/element-ref';
 import BlueprintList from '../../src/blueprints/blueprint-list';
 import DynamicProp from '../../src/blueprints/utils/dynamic-prop';
+import { ErrorMessages } from '../../src/constants/error-messages';
 
 describe('Blueprint module', () => {
     describe('constructor', () => {
@@ -107,6 +108,34 @@ describe('Blueprint module', () => {
 
             expect(elem.getAttributeNames().length).toEqual(1);
             expect(elem.getAttribute('key')).toEqual('value');
+        });
+
+        test('do not set dynamic attribute with no default', () => {
+            const prop = new DynamicProp<string>();
+            const elem = Blueprint.build(
+                new Blueprint('div').attribute('key', prop),
+            );
+
+            expect(elem.hasAttribute('key')).toBeFalsy();
+        });
+
+        test('set default dynamic attribute with updates', () => {
+            const prop = new DynamicProp('value');
+            const elem = Blueprint.build(
+                new Blueprint('div').attribute('key', prop),
+            );
+
+            expect(elem.getAttribute('key')).toEqual('value');
+            prop.set('update');
+            expect(elem.getAttribute('key')).toEqual('update');
+        });
+
+        test('throws error when duplicate attribute name is set', () => {
+            const blueprint = new Blueprint('div').attribute('key', 'value');
+
+            expect(() => blueprint.attribute('key', 'value')).toThrow(
+                ErrorMessages.Blueprint.duplicateAttributeKey('key'),
+            );
         });
     });
 

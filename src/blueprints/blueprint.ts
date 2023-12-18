@@ -3,6 +3,7 @@ import ElementRef from './utils/element-ref';
 import { EventHandler } from '../types/event-handler';
 import BlueprintList from './blueprint-list';
 import DynamicProp from './utils/dynamic-prop';
+import { ErrorMessages } from '../constants/error-messages';
 
 export class Blueprint {
     private readonly tagName: string;
@@ -63,8 +64,21 @@ export class Blueprint {
         return this;
     }
 
-    attribute(name: string, value: string) {
-        this.plans.attributes[name] = value;
+    attribute(name: string, value: string | DynamicProp<string>) {
+        if (this.plans.attributes[name]) {
+            throw new Error(
+                ErrorMessages.Blueprint.duplicateAttributeKey(name),
+            );
+        }
+        if (value instanceof DynamicProp) {
+            value.onElementChange(this.selfRef, (el) => (val) => {
+                if (val) {
+                    el.setAttribute(name, val);
+                }
+            });
+        } else {
+            this.plans.attributes[name] = value;
+        }
         return this;
     }
 

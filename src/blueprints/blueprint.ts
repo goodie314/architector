@@ -66,26 +66,24 @@ export class Blueprint {
         return this.addEventListener('click', eventHandler);
     }
 
-    static build(describer: Blueprint) {
-        const elem = document.createElement(describer.tagName);
-        const describerAttributes = describer.plans;
+    static build(blueprint: Blueprint) {
+        const elem = document.createElement(blueprint.tagName);
+        const plans = blueprint.plans;
 
-        if (describerAttributes.id) {
-            elem.id = describerAttributes.id;
+        if (plans.id) {
+            elem.id = plans.id;
         }
-        if (describerAttributes.text) {
-            elem.textContent = describerAttributes.text;
+        if (plans.text) {
+            elem.textContent = plans.text;
         }
 
-        describerAttributes.classNames.forEach((className) =>
-            elem.classList.add(className),
-        );
+        plans.classNames.forEach((className) => elem.classList.add(className));
 
-        Object.entries(describerAttributes.attributes).forEach(([key, value]) =>
+        Object.entries(plans.attributes).forEach(([key, value]) =>
             elem.setAttribute(key, value),
         );
 
-        describerAttributes.children
+        plans.children
             .flatMap<string | HTMLElement>((child) => {
                 if (child instanceof Blueprint) {
                     return [Blueprint.build(child)];
@@ -97,21 +95,20 @@ export class Blueprint {
             })
             .forEach((child) => elem.append(child));
 
-        Object.entries(describerAttributes.handlers).forEach(
-            ([eventName, eventHandler]) =>
-                elem.addEventListener(eventName, (event) => {
-                    if (!(event.currentTarget instanceof Element)) {
-                        throw new Error(
-                            'Internal error. It should not be possible to attach an event listener here where an element is not the target',
-                        );
-                    }
-                    return eventHandler(event.currentTarget, event);
-                }),
+        Object.entries(plans.handlers).forEach(([eventName, eventHandler]) =>
+            elem.addEventListener(eventName, (event) => {
+                if (!(event.currentTarget instanceof Element)) {
+                    throw new Error(
+                        'Internal error. It should not be possible to attach an event listener here where an element is not the target',
+                    );
+                }
+                return eventHandler(event.currentTarget, event);
+            }),
         );
 
-        describer.selfRef.set(elem);
-        if (describer.elementRef) {
-            describer.elementRef.set(elem);
+        blueprint.selfRef.set(elem);
+        if (blueprint.elementRef) {
+            blueprint.elementRef.set(elem);
         }
 
         return elem;

@@ -2,15 +2,16 @@ import { BlueprintAttributes } from '../models/blueprint-attributes';
 import ElementRef from './utils/element-ref';
 import { EventHandler } from '../types/event-handler';
 import BlueprintList from './blueprint-list';
+import DynamicProp from './utils/dynamic-prop';
 
 export class Blueprint {
     private readonly tagName: string;
-    private described: BlueprintAttributes;
+    private plans: BlueprintAttributes;
     private elementRef: ElementRef<HTMLElement>;
 
     constructor(tagName: string) {
         this.tagName = tagName;
-        this.described = {
+        this.plans = {
             classNames: [],
             attributes: {},
             children: [],
@@ -18,29 +19,35 @@ export class Blueprint {
         };
     }
 
-    id(value: string) {
-        this.described.id = value;
+    id(value: string | DynamicProp<string>) {
+        if (value instanceof DynamicProp) {
+            value.onChange((val) => {
+                this.plans.id = val
+            });
+        } else {
+            this.plans.id = value;
+        }
         return this;
     }
 
     classNames(...values: string[]) {
-        this.described.classNames.push(...values);
+        this.plans.classNames.push(...values);
         return this;
     }
 
     attribute(name: string, value: string) {
-        this.described.attributes[name] = value;
+        this.plans.attributes[name] = value;
         return this;
     }
 
     text(text: string) {
-        this.described.text = text;
+        this.plans.text = text;
         return this;
     }
 
     append(...components: (Blueprint | string | BlueprintList)[]) {
         components.forEach((component) =>
-            this.described.children.push(component),
+            this.plans.children.push(component),
         );
         return this;
     }
@@ -51,7 +58,7 @@ export class Blueprint {
     }
 
     addEventListener(eventName: string, handler: EventHandler) {
-        this.described.handlers[eventName] = handler;
+        this.plans.handlers[eventName] = handler;
         return this;
     }
 
@@ -61,7 +68,7 @@ export class Blueprint {
 
     static build(describer: Blueprint) {
         const elem = document.createElement(describer.tagName);
-        const describerAttributes = describer.described;
+        const describerAttributes = describer.plans;
 
         if (describerAttributes.id) {
             elem.id = describerAttributes.id;

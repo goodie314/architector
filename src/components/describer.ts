@@ -1,15 +1,16 @@
 import { DescriberAttributes } from '../models/describer-attributes';
 import ElementRef from '../util/element-ref';
 import { EventHandler } from '../types/event-handler';
+import DescribedList from './described-list';
 
 export class Describer {
     private readonly tagName: string;
-    private attributes: DescriberAttributes;
-    private elementRef: ElementRef;
+    private described: DescriberAttributes;
+    private elementRef: ElementRef<HTMLElement>;
 
     constructor(tagName: string) {
         this.tagName = tagName;
-        this.attributes = {
+        this.described = {
             classNames: [],
             attributes: {},
             children: [],
@@ -18,31 +19,28 @@ export class Describer {
     }
 
     id(value: string) {
-        this.attributes.id = value;
+        this.described.id = value;
         return this;
     }
 
     classNames(...values: string[]) {
-        this.attributes.classNames.push(...values);
+        this.described.classNames.push(...values);
         return this;
     }
 
-    attribute(attributeMap: { [key: string]: string }) {
-        Object.entries(attributeMap).forEach(([key, value]) => {
-            this.attributes.attributes[key] = value;
-        });
-
+    attribute(name: string, value: string) {
+        this.described.attributes[name] = value;
         return this;
     }
 
     text(text: string) {
-        this.attributes.text = text;
+        this.described.text = text;
         return this;
     }
 
-    append(...components: Describer[]) {
+    append(...components: (Describer | string | DescribedList)[]) {
         components.forEach((component) =>
-            this.attributes.children.push(component),
+            this.described.children.push(component),
         );
         return this;
     }
@@ -52,18 +50,18 @@ export class Describer {
         return this;
     }
 
-    eventHandler(eventName: string, handler: EventHandler) {
-        this.attributes.handlers[eventName] = handler;
+    addEventListener(eventName: string, handler: EventHandler) {
+        this.described.handlers[eventName] = handler;
         return this;
     }
 
     click(eventHandler: EventHandler) {
-        return this.eventHandler('click', eventHandler);
+        return this.addEventListener('click', eventHandler);
     }
 
     static build(describer: Describer) {
         const elem = document.createElement(describer.tagName);
-        const describerAttributes = describer.attributes;
+        const describerAttributes = describer.described;
 
         if (describerAttributes.id) {
             elem.id = describerAttributes.id;
@@ -80,9 +78,17 @@ export class Describer {
             elem.setAttribute(key, value),
         );
 
-        describerAttributes.children.forEach((child) =>
-            elem.appendChild(Describer.build(child)),
-        );
+        describerAttributes.children
+            .flatMap<string | HTMLElement>((child) => {
+                if (child instanceof Describer) {
+                    return [Describer.build(child)];
+                } else if (child instanceof DescribedList) {
+                    return DescribedList.Build(child, elem);
+                } else {
+                    return [child as string];
+                }
+            })
+            .forEach((child) => elem.append(child));
 
         Object.entries(describerAttributes.handlers).forEach(
             ([eventName, eventHandler]) =>

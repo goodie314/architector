@@ -1,5 +1,6 @@
 import { Describer } from '../../src/components/describer';
 import ElementRef from '../../src/util/element-ref';
+import DescribedList from '../../src/components/described-list';
 
 describe('Describer module', () => {
     describe('constructor', () => {
@@ -43,9 +44,7 @@ describe('Describer module', () => {
     describe('attribute', () => {
         test('sets single attribute', () => {
             const elem = Describer.build(
-                new Describer('div').attribute({
-                    key: 'value',
-                }),
+                new Describer('div').attribute('key', 'value'),
             );
 
             expect(elem.getAttributeNames().length).toEqual(1);
@@ -94,6 +93,57 @@ describe('Describer module', () => {
                 .forEach((n, i) =>
                     expect(elem.children.item(i).id).toEqual(`elem${i}`),
                 );
+        });
+
+        test('correctly appends text', () => {
+            const elem = Describer.build(
+                new Describer('div').append('hello ', 'world').append('!'),
+            );
+
+            expect(elem.textContent).toEqual('hello world!');
+        });
+
+        test('correctly appends and builds DescribedList', () => {
+            const describedList = new DescribedList();
+            describedList.push('1', new Describer('div').id('inner1'));
+            describedList.push('2', new Describer('div').id('inner2'));
+
+            const elem = Describer.build(
+                new Describer('div').append(describedList),
+            );
+
+            expect(elem.children.length).toEqual(2);
+            expect(elem.children.item(0).id).toEqual('inner1');
+            expect(elem.children.item(1).id).toEqual('inner2');
+        });
+
+        test('correctly appends multiple types to an element', () => {
+            const describedList = new DescribedList();
+            describedList.push(
+                '1',
+                new Describer('p').id('list1').text('item 1'),
+            );
+            describedList.push(
+                '2',
+                new Describer('p').id('list2').text('item 2'),
+            );
+
+            const elem = Describer.build(
+                new Describer('div').append(
+                    new Describer('h1').id('title').text('Title'),
+                    describedList,
+                    'extra',
+                ),
+            );
+
+            expect(elem.children.length).toEqual(3);
+            expect(elem.children.item(0).id).toEqual('title');
+            expect(elem.children.item(0).textContent).toEqual('Title');
+
+            expect(elem.children.item(1)).toEqual(describedList.get('1'));
+            expect(elem.children.item(2)).toEqual(describedList.get('2'));
+
+            expect(elem.textContent).toEqual('Titleitem 1item 2extra');
         });
     });
 

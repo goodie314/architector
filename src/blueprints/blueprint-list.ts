@@ -23,7 +23,7 @@ export default class BlueprintList<K = string> {
 
     async push(id: K, describer: Blueprint) {
         if (this.elementMap.has(id)) {
-            throw new Error(ErrorMessages.DescribedList.duplicateId(id));
+            throw new Error(ErrorMessages.BlueprintList.duplicateId(id));
         }
         const elem = Blueprint.build(describer);
 
@@ -36,7 +36,7 @@ export default class BlueprintList<K = string> {
 
     async replaceById(id: K, describer: Blueprint) {
         if (!this.elementMap.has(id)) {
-            throw new Error(ErrorMessages.DescribedList.replaceByIdError(id));
+            throw new Error(ErrorMessages.BlueprintList.replaceByIdError(id));
         }
         const old = this.elementMap.get(id);
 
@@ -50,7 +50,7 @@ export default class BlueprintList<K = string> {
     async replaceByIndex(index: number, describer: Blueprint) {
         if (index < 0 || index >= this.order.length) {
             throw new Error(
-                ErrorMessages.DescribedList.replaceByIndexError(index),
+                ErrorMessages.BlueprintList.replaceByIndexError(index),
             );
         }
         const id = this.order[index];
@@ -65,7 +65,7 @@ export default class BlueprintList<K = string> {
 
     remove(id: K) {
         if (!this.elementMap.has(id)) {
-            throw new Error(ErrorMessages.DescribedList.removeError(id));
+            throw new Error(ErrorMessages.BlueprintList.removeError(id));
         }
         this.elementMap.get(id).remove();
         this.elementMap.delete(id);

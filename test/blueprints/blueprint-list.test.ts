@@ -38,7 +38,7 @@ describe('BlueprintList module', () => {
 
             await expect(
                 describedList.push('1', new Blueprint('div')),
-            ).rejects.toThrow(ErrorMessages.DescribedList.duplicateId('1'));
+            ).rejects.toThrow(ErrorMessages.BlueprintList.duplicateId('1'));
         });
     });
 
@@ -62,7 +62,7 @@ describe('BlueprintList module', () => {
             await expect(
                 list.replaceById('1', new Blueprint('div')),
             ).rejects.toThrow(
-                ErrorMessages.DescribedList.replaceByIdError('1'),
+                ErrorMessages.BlueprintList.replaceByIdError('1'),
             );
         });
     });
@@ -93,12 +93,12 @@ describe('BlueprintList module', () => {
             await expect(
                 list.replaceByIndex(-1, new Blueprint('div')),
             ).rejects.toThrow(
-                ErrorMessages.DescribedList.replaceByIndexError(-1),
+                ErrorMessages.BlueprintList.replaceByIndexError(-1),
             );
             await expect(
                 list.replaceByIndex(3, new Blueprint('div')),
             ).rejects.toThrow(
-                ErrorMessages.DescribedList.replaceByIndexError(3),
+                ErrorMessages.BlueprintList.replaceByIndexError(3),
             );
         });
     });
@@ -129,7 +129,7 @@ describe('BlueprintList module', () => {
         test('throws error when id is not in the list', () => {
             const list = new BlueprintList();
             expect(() => list.remove('1')).toThrow(
-                ErrorMessages.DescribedList.removeError('1'),
+                ErrorMessages.BlueprintList.removeError('1'),
             );
         });
     });

@@ -1,5 +1,5 @@
 export const ErrorMessages = {
-    DescribedList: {
+    BlueprintList: {
         duplicateId: (id: any) =>
             `Cannot have duplicate ids in described list. Duplicate id: ${id}`,
         replaceByIdError: (id: any) =>

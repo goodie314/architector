@@ -146,6 +146,15 @@ describe('Blueprint module', () => {
             );
             expect(elem.textContent).toEqual('Hello world');
         });
+
+        test('sets dynamic text value on element', () => {
+            const prop = new DynamicProp<string>();
+            const elem = Blueprint.build(new Blueprint('div').text(prop));
+
+            expect(elem.textContent).toEqual('');
+            prop.set('Hello world');
+            expect(elem.textContent).toEqual('Hello world');
+        });
     });
 
     describe('append', () => {

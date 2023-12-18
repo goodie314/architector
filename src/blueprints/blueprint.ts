@@ -82,8 +82,15 @@ export class Blueprint {
         return this;
     }
 
-    text(text: string) {
-        this.plans.text = text;
+    text(text: string | DynamicProp<string>) {
+        if (text instanceof DynamicProp) {
+            text.onElementChange(
+                this.selfRef,
+                (el) => (value) => (el.textContent = value),
+            );
+        } else {
+            this.plans.text = text;
+        }
         return this;
     }
 

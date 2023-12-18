@@ -1,5 +1,5 @@
-import BlueprintList from '../../src/components/blueprint-list';
-import { Blueprint } from '../../src/components/blueprint';
+import BlueprintList from '../../src/blueprints/blueprint-list';
+import { Blueprint } from '../../src/blueprints/blueprint';
 import { ErrorMessages } from '../../src/constants/error-messages';
 import ElementRef from '../../src/util/element-ref';
 

@@ -1,6 +1,6 @@
-import { Blueprint } from '../../src/components/blueprint';
+import { Blueprint } from '../../src/blueprints/blueprint';
 import ElementRef from '../../src/util/element-ref';
-import BlueprintList from '../../src/components/blueprint-list';
+import BlueprintList from '../../src/blueprints/blueprint-list';
 
 describe('Blueprint module', () => {
     describe('constructor', () => {

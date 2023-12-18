@@ -1,4 +1,4 @@
-import { Blueprint } from '../components/blueprint';
+import { Blueprint } from '../blueprints/blueprint';
 
 export default class BlueprintBuilder {
     private readonly rootComponent: Blueprint;

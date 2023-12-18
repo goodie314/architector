@@ -1,5 +1,5 @@
-import BlueprintComponent from '../../../../src/components/blueprint-component';
-import { Blueprint } from '../../../../src/components/blueprint';
+import BlueprintComponent from '../../../../src/blueprints/blueprint-component';
+import { Blueprint } from '../../../../src/blueprints/blueprint';
 import ElementRef from '../../../../src/util/element-ref';
 
 export default class TodoApp extends BlueprintComponent {

@@ -9,7 +9,7 @@ export default abstract class BlueprintComponent {
 
     abstract compose(): Blueprint;
 
-    // utility methods to generate components
+    // utility methods to generate blueprints
     blueprint(tagName: string) {
         return new Blueprint(tagName);
     }

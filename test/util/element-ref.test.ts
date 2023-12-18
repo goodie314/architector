@@ -1,5 +1,5 @@
 import ElementRef from '../../src/util/element-ref';
-import { Blueprint } from '../../src/components/blueprint';
+import { Blueprint } from '../../src/blueprints/blueprint';
 
 describe('ElementRef module', () => {
     test('getter and setter', (done) => {

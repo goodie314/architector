@@ -1,5 +1,5 @@
 import BlueprintBuilder from '../../src/structure/blueprint-builder';
-import SimpleHtmlComponent from '../components/test-components/simple-html-component';
+import SimpleHtmlComponent from '../blueprints/test-components/simple-html-component';
 
 describe('Describable page module', () => {
     test('successfully render app in the document body', () => {

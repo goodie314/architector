@@ -1,6 +1,6 @@
-import { Blueprint } from '../components/blueprint';
+import { Blueprint } from '../blueprints/blueprint';
 import { EventHandler } from '../types/event-handler';
-import BlueprintList from '../components/blueprint-list';
+import BlueprintList from '../blueprints/blueprint-list';
 
 export interface BlueprintAttributes {
     id?: string;

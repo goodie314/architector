@@ -11,4 +11,17 @@ describe('ElementRef module', () => {
         });
         elementRef.set(elem);
     });
+
+    test('queue task works correctly', () => {
+        const elementRef = new ElementRef();
+        const elem = document.createElement('div');
+        const mockTask = jest.fn();
+
+        elementRef.queueTask(mockTask);
+
+        expect(mockTask).not.toHaveBeenCalled();
+
+        elementRef.set(elem);
+        expect(mockTask).toHaveBeenCalledWith(elem);
+    });
 });

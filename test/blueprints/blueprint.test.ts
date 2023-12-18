@@ -1,6 +1,7 @@
 import { Blueprint } from '../../src/blueprints/blueprint';
 import ElementRef from '../../src/blueprints/utils/element-ref';
 import BlueprintList from '../../src/blueprints/blueprint-list';
+import DynamicProp from '../../src/blueprints/utils/dynamic-prop';
 
 describe('Blueprint module', () => {
     describe('constructor', () => {
@@ -18,6 +19,25 @@ describe('Blueprint module', () => {
             const elem = Blueprint.build(new Blueprint('div').id('testId'));
 
             expect(elem.id).toEqual('testId');
+        });
+
+        test('sets the id of the element with a dynamic prop', () => {
+            const prop = new DynamicProp('default');
+            const elem = Blueprint.build(new Blueprint('div').id(prop));
+
+            expect(elem.id).toEqual('default');
+
+            prop.set('update');
+
+            expect(elem.id).toEqual('update');
+        });
+
+        test('sets the id to the latest value when prop is updated early', () => {
+            const prop = new DynamicProp('default');
+            prop.set('update');
+            const elem = Blueprint.build(new Blueprint('div').id(prop));
+
+            expect(elem.id).toEqual('update');
         });
     });
 

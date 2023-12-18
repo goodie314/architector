@@ -7,7 +7,8 @@ import DynamicProp from './utils/dynamic-prop';
 export class Blueprint {
     private readonly tagName: string;
     private plans: BlueprintAttributes;
-    private elementRef: ElementRef<HTMLElement>;
+    private elementRef: ElementRef;
+    private readonly selfRef = new ElementRef();
 
     constructor(tagName: string) {
         this.tagName = tagName;
@@ -21,9 +22,10 @@ export class Blueprint {
 
     id(value: string | DynamicProp<string>) {
         if (value instanceof DynamicProp) {
-            value.onChange((val) => {
-                this.plans.id = val
-            });
+            value.onElementChange(
+                this.selfRef,
+                (element) => (value) => (element.id = value),
+            );
         } else {
             this.plans.id = value;
         }
@@ -46,9 +48,7 @@ export class Blueprint {
     }
 
     append(...components: (Blueprint | string | BlueprintList)[]) {
-        components.forEach((component) =>
-            this.plans.children.push(component),
-        );
+        components.forEach((component) => this.plans.children.push(component));
         return this;
     }
 
@@ -109,6 +109,7 @@ export class Blueprint {
                 }),
         );
 
+        describer.selfRef.set(elem);
         if (describer.elementRef) {
             describer.elementRef.set(elem);
         }

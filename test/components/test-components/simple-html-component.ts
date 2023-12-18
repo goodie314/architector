@@ -9,9 +9,7 @@ export default class SimpleHtmlComponent extends DescribableComponent {
         return this.div()
             .id('test-id')
             .classNames('class-1', 'class-2')
-            .attribute({
-                test: 'test-attribute',
-            })
+            .attribute('test', 'test-attribute')
             .text('Hello');
     }
 }

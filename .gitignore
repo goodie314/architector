@@ -6,3 +6,6 @@ test/**/*.js
 
 sample/simple-html/bundle
 sample/simple-html/**/*.js
+
+sample/todo/bundle
+sample/todo/**/*.js

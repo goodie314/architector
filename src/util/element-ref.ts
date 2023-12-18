@@ -1,18 +1,16 @@
-export default class ElementRef {
-    private element: Promise<Element>;
-    private onLoaded: (element: Element) => void;
+export default class ElementRef<T extends HTMLElement = HTMLElement> {
+    private readonly element: Promise<T>;
+    private onLoaded: (element: T) => void;
 
     constructor() {
-        this.element = new Promise<Element>(
-            (resolve) => (this.onLoaded = resolve),
-        );
+        this.element = new Promise<T>((resolve) => (this.onLoaded = resolve));
     }
 
     get() {
         return this.element;
     }
 
-    set(element: Element) {
+    set(element: T) {
         this.onLoaded(element);
     }
 }

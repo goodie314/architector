@@ -12,11 +12,7 @@ export default class PlainComponent extends DescribableComponent {
             .map((n, i) => this.describe('li').text(`Item ${i}`));
         return this.describe('div').append(
             this.describe('h1').text('Hello world'),
-            this.describe('a')
-                .attribute({
-                    href: './demo',
-                })
-                .text('Demo page'),
+            this.describe('a').attribute('href', './demo').text('Demo page'),
             this.describe('ul').append(...li),
             this.describe('script').text(
                 'window.onload=() => console.log(window.performance)',

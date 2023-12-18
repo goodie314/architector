@@ -3,6 +3,7 @@ import ElementRef from './utils/element-ref';
 import { EventHandler } from '../types/event-handler';
 import DynamicProp from './utils/dynamic-prop';
 import { ErrorMessages } from '../constants/error-messages';
+import { BlueprintBuilderContext } from '../models/blueprint-builder-context';
 
 export class Blueprint {
     private readonly tagName: string;
@@ -112,7 +113,10 @@ export class Blueprint {
         return this.addEventListener('click', eventHandler);
     }
 
-    static build(blueprint: Blueprint) {
+    static build(
+        blueprint: Blueprint,
+        builderContext: BlueprintBuilderContext,
+    ) {
         const elem = document.createElement(blueprint.tagName);
         const plans = blueprint.plans;
 
@@ -132,7 +136,11 @@ export class Blueprint {
         plans.children
             .flatMap<string | HTMLElement>((child) => {
                 if (child instanceof Blueprint) {
-                    return [Blueprint.build(child)];
+                    return [
+                        Blueprint.build(child, {
+                            parentElem: elem,
+                        }),
+                    ];
                 } else {
                     return [child as string];
                 }

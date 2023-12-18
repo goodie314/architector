@@ -1,10 +1,17 @@
 import ElementRef from '../../../src/blueprints/utils/element-ref';
 import { Blueprint } from '../../../src/blueprints/blueprint';
+import { BlueprintBuilderContext } from '../../../src/models/blueprint-builder-context';
 
+const defaultBuilderContext: BlueprintBuilderContext = {
+    parentElem: document.body,
+};
 describe('ElementRef module', () => {
     test('getter and setter', (done) => {
         const elementRef = new ElementRef();
-        const elem = Blueprint.build(new Blueprint('div'));
+        const elem = Blueprint.build(
+            new Blueprint('div'),
+            defaultBuilderContext,
+        );
         elementRef.get().then((el) => {
             expect(el).toEqual(elem);
             done();

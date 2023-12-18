@@ -5,7 +5,9 @@ describe('Describable component module', () => {
     describe('Simple html component', () => {
         test('successfully create component', () => {
             const comp = new SimpleHtmlComponent();
-            const el = Blueprint.build(comp.compose());
+            const el = Blueprint.build(comp.compose(), {
+                parentElem: document.body,
+            });
 
             expect(el.tagName).toEqual('DIV');
             expect(el.id).toEqual('test-id');

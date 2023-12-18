@@ -2,6 +2,11 @@ import { Blueprint } from '../../src/blueprints/blueprint';
 import ElementRef from '../../src/blueprints/utils/element-ref';
 import DynamicProp from '../../src/blueprints/utils/dynamic-prop';
 import { ErrorMessages } from '../../src/constants/error-messages';
+import { BlueprintBuilderContext } from '../../src/models/blueprint-builder-context';
+
+const defaultBuilderContext: BlueprintBuilderContext = {
+    parentElem: document.body,
+};
 
 describe('Blueprint module', () => {
     describe('constructor', () => {
@@ -9,21 +14,28 @@ describe('Blueprint module', () => {
             const builder = new Blueprint(tagName);
 
             expect(
-                Blueprint.build(builder) instanceof HTMLElement,
+                Blueprint.build(builder, defaultBuilderContext) instanceof
+                    HTMLElement,
             ).toBeTruthy();
         });
     });
 
     describe('id', () => {
         test('sets the id of the final element', () => {
-            const elem = Blueprint.build(new Blueprint('div').id('testId'));
+            const elem = Blueprint.build(
+                new Blueprint('div').id('testId'),
+                defaultBuilderContext,
+            );
 
             expect(elem.id).toEqual('testId');
         });
 
         test('sets the id of the element with a dynamic prop', () => {
             const prop = new DynamicProp('default');
-            const elem = Blueprint.build(new Blueprint('div').id(prop));
+            const elem = Blueprint.build(
+                new Blueprint('div').id(prop),
+                defaultBuilderContext,
+            );
 
             expect(elem.id).toEqual('default');
 
@@ -35,7 +47,10 @@ describe('Blueprint module', () => {
         test('sets the id to the latest value when prop is updated early', () => {
             const prop = new DynamicProp('default');
             prop.set('update');
-            const elem = Blueprint.build(new Blueprint('div').id(prop));
+            const elem = Blueprint.build(
+                new Blueprint('div').id(prop),
+                defaultBuilderContext,
+            );
 
             expect(elem.id).toEqual('update');
         });
@@ -45,6 +60,7 @@ describe('Blueprint module', () => {
         test('sets a single className on the final element', () => {
             const elem = Blueprint.build(
                 new Blueprint('div').classNames('test'),
+                defaultBuilderContext,
             );
             expect(elem.classList.length).toEqual(1);
             expect(elem.classList.contains('test')).toBeTruthy();
@@ -53,6 +69,7 @@ describe('Blueprint module', () => {
         test('sets multiple class names on the final element', () => {
             const elem = Blueprint.build(
                 new Blueprint('div').classNames('test1', 'test2'),
+                defaultBuilderContext,
             );
 
             expect(elem.classList.length).toEqual(2);
@@ -62,7 +79,10 @@ describe('Blueprint module', () => {
 
         test('sets a single dynamic prop on an element', () => {
             const prop = new DynamicProp('default');
-            const elem = Blueprint.build(new Blueprint('div').classNames(prop));
+            const elem = Blueprint.build(
+                new Blueprint('div').classNames(prop),
+                defaultBuilderContext,
+            );
 
             expect(elem.classList.length).toEqual(1);
             expect(elem.classList.contains('default')).toBeTruthy();
@@ -78,6 +98,7 @@ describe('Blueprint module', () => {
             const prop2 = new DynamicProp('update');
             const elem = Blueprint.build(
                 new Blueprint('div').classNames('default', prop, prop2),
+                defaultBuilderContext,
             );
 
             expect(elem.classList.length).toEqual(2);
@@ -103,6 +124,7 @@ describe('Blueprint module', () => {
         test('sets single attribute', () => {
             const elem = Blueprint.build(
                 new Blueprint('div').attribute('key', 'value'),
+                defaultBuilderContext,
             );
 
             expect(elem.getAttributeNames().length).toEqual(1);
@@ -113,6 +135,7 @@ describe('Blueprint module', () => {
             const prop = new DynamicProp<string>();
             const elem = Blueprint.build(
                 new Blueprint('div').attribute('key', prop),
+                defaultBuilderContext,
             );
 
             expect(elem.hasAttribute('key')).toBeFalsy();
@@ -122,6 +145,7 @@ describe('Blueprint module', () => {
             const prop = new DynamicProp('value');
             const elem = Blueprint.build(
                 new Blueprint('div').attribute('key', prop),
+                defaultBuilderContext,
             );
 
             expect(elem.getAttribute('key')).toEqual('value');
@@ -142,13 +166,17 @@ describe('Blueprint module', () => {
         test('sets text value of element', () => {
             const elem = Blueprint.build(
                 new Blueprint('div').text('Hello world'),
+                defaultBuilderContext,
             );
             expect(elem.textContent).toEqual('Hello world');
         });
 
         test('sets dynamic text value on element', () => {
             const prop = new DynamicProp<string>();
-            const elem = Blueprint.build(new Blueprint('div').text(prop));
+            const elem = Blueprint.build(
+                new Blueprint('div').text(prop),
+                defaultBuilderContext,
+            );
 
             expect(elem.textContent).toEqual('');
             prop.set('Hello world');
@@ -163,6 +191,7 @@ describe('Blueprint module', () => {
                     new Blueprint('div').id('elem1'),
                     new Blueprint('div').id('elem2'),
                 ),
+                defaultBuilderContext,
             );
 
             expect(elem.children.length).toEqual(2);
@@ -180,6 +209,7 @@ describe('Blueprint module', () => {
                     .append(...children.slice(0, 2))
                     .append(children[2])
                     .append(...children.slice(3)),
+                defaultBuilderContext,
             );
 
             expect(elem.children.length).toEqual(5);
@@ -193,6 +223,7 @@ describe('Blueprint module', () => {
         test('correctly appends text', () => {
             const elem = Blueprint.build(
                 new Blueprint('div').append('hello ', 'world').append('!'),
+                defaultBuilderContext,
             );
 
             expect(elem.textContent).toEqual('hello world!');
@@ -205,6 +236,7 @@ describe('Blueprint module', () => {
                     'world',
                     new Blueprint('span').id('span').text('!'),
                 ),
+                defaultBuilderContext,
             );
 
             expect(elem.children.length).toEqual(2);
@@ -223,7 +255,7 @@ describe('Blueprint module', () => {
             const ref = new ElementRef();
             const describer = new Blueprint('div').id('test-element').ref(ref);
 
-            Blueprint.build(describer);
+            Blueprint.build(describer, defaultBuilderContext);
             const element = await ref.get();
             expect(element.id).toEqual('test-element');
         });
@@ -235,7 +267,9 @@ describe('Blueprint module', () => {
                 fail('should not reach here');
             });
 
-            Blueprint.build(describer).dispatchEvent(new Event('test'));
+            Blueprint.build(describer, defaultBuilderContext).dispatchEvent(
+                new Event('test'),
+            );
         });
         test('click event', (done) => {
             const describer = new Blueprint('button')
@@ -245,7 +279,27 @@ describe('Blueprint module', () => {
                     done();
                 });
 
-            Blueprint.build(describer).click();
+            Blueprint.build(describer, defaultBuilderContext).click();
+        });
+    });
+
+    describe('build', () => {
+        const buildSpy = jest.spyOn(Blueprint, 'build');
+
+        test('has parentRef set in build context', () => {
+            const subBlueprint = new Blueprint('div');
+            const blueprint = new Blueprint('div').append(subBlueprint);
+            const elem = Blueprint.build(blueprint, defaultBuilderContext);
+
+            expect(buildSpy).toHaveBeenCalledTimes(2);
+            expect(buildSpy).toHaveBeenNthCalledWith(
+                1,
+                blueprint,
+                defaultBuilderContext,
+            );
+            expect(buildSpy).toHaveBeenNthCalledWith(2, subBlueprint, {
+                parentElem: elem,
+            });
         });
     });
 });

@@ -1,5 +1,5 @@
 import { BlueprintAttributes } from '../models/blueprint-attributes';
-import ElementRef from '../util/element-ref';
+import ElementRef from './utils/element-ref';
 import { EventHandler } from '../types/event-handler';
 import BlueprintList from './blueprint-list';
 

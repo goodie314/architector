@@ -1,6 +1,6 @@
 import BlueprintComponent from '../../../../src/blueprints/blueprint-component';
 import { Blueprint } from '../../../../src/blueprints/blueprint';
-import ElementRef from '../../../../src/util/element-ref';
+import ElementRef from '../../../../src/blueprints/utils/element-ref';
 
 export default class TodoApp extends BlueprintComponent {
     private tasks: {

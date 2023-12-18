@@ -1,4 +1,4 @@
-import ElementRef from '../../src/util/element-ref';
+import ElementRef from '../../src/blueprints/utils/element-ref';
 import { Blueprint } from '../../src/blueprints/blueprint';
 
 describe('ElementRef module', () => {

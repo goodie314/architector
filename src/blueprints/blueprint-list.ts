@@ -1,5 +1,5 @@
 import { Blueprint } from './blueprint';
-import ElementRef from '../util/element-ref';
+import ElementRef from './utils/element-ref';
 import { ErrorMessages } from '../constants/error-messages';
 
 export default class BlueprintList<K = string> {

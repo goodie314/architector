@@ -1,22 +1,30 @@
 import ElementRef from './element-ref';
 
 export default class DynamicProp<T> {
+    private prevValue: T;
     private value: T;
-    private callbacks: ((value: T) => void)[];
+    private callbacks: ((value: T, prev: T) => void)[];
 
     constructor(defaultValue?: T) {
+        this.prevValue = defaultValue;
         this.value = defaultValue;
         this.callbacks = [];
     }
 
-    onChange(callback: (value: T) => void) {
+    currentValue() {
+        return this.value;
+    }
+
+    onChange(callback: (value: T, prev: T) => void) {
         this.callbacks.push(callback);
-        this.callbacks.forEach((callback) => callback(this.value));
+        this.callbacks.forEach((callback) =>
+            callback(this.value, this.prevValue),
+        );
     }
 
     onElementChange(
         elementRef: ElementRef,
-        callback: (element: HTMLElement) => (value: T) => void,
+        callback: (element: HTMLElement) => (value: T, prev: T) => void,
     ) {
         elementRef.queueTask((el) => {
             this.onChange(callback(el));
@@ -24,7 +32,10 @@ export default class DynamicProp<T> {
     }
 
     set(value: T) {
+        this.prevValue = this.value;
         this.value = value;
-        this.callbacks.forEach((callback) => callback(this.value));
+        this.callbacks.forEach((callback) =>
+            callback(this.value, this.prevValue),
+        );
     }
 }

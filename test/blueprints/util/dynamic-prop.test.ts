@@ -10,6 +10,13 @@ describe('DynamicProp', () => {
         });
     });
 
+    test('can get the current value', () => {
+        const prop = new DynamicProp();
+        expect(prop.currentValue()).toEqual(undefined);
+        prop.set('update');
+        expect(prop.currentValue()).toEqual('update');
+    });
+
     test('updated value emitted', (done) => {
         const prop = new DynamicProp('default');
         prop.set('update');
@@ -27,8 +34,8 @@ describe('DynamicProp', () => {
         prop.set('update');
 
         expect(callback).toHaveBeenCalledTimes(2);
-        expect(callback).toHaveBeenNthCalledWith(1, 'default');
-        expect(callback).toHaveBeenNthCalledWith(2, 'update');
+        expect(callback).toHaveBeenNthCalledWith(1, 'default', 'default');
+        expect(callback).toHaveBeenNthCalledWith(2, 'update', 'default');
     });
 
     describe('onElementChange', () => {
@@ -46,7 +53,7 @@ describe('DynamicProp', () => {
             prop.onElementChange(elementRef, elementCallback);
 
             expect(elementCallback).toHaveBeenCalledWith(elem);
-            expect(valueCallback).toHaveBeenCalledWith('default');
+            expect(valueCallback).toHaveBeenCalledWith('default', 'default');
         });
 
         test('registers callback and calls with default value when element is set after value callback', () => {
@@ -61,7 +68,7 @@ describe('DynamicProp', () => {
             elementRef.set(elem);
 
             expect(elementCallback).toHaveBeenCalledWith(elem);
-            expect(valueCallback).toHaveBeenCalledWith('default');
+            expect(valueCallback).toHaveBeenCalledWith('default', 'default');
         });
 
         test('registers callback and calls with non default values when element set after handler', () => {
@@ -74,7 +81,7 @@ describe('DynamicProp', () => {
 
             expect(elementCallback).toHaveBeenCalledWith(elem);
             expect(valueCallback).toHaveBeenCalledTimes(1);
-            expect(valueCallback).toHaveBeenCalledWith('update');
+            expect(valueCallback).toHaveBeenCalledWith('update', 'default');
         });
 
         test('registers callback and calls with default value and subsequent values', () => {
@@ -88,8 +95,16 @@ describe('DynamicProp', () => {
             expect(elementCallback).toHaveBeenCalledTimes(1);
             expect(elementCallback).toHaveBeenCalledWith(elem);
             expect(valueCallback).toHaveBeenCalledTimes(2);
-            expect(valueCallback).toHaveBeenNthCalledWith(1, 'default');
-            expect(valueCallback).toHaveBeenNthCalledWith(2, 'update');
+            expect(valueCallback).toHaveBeenNthCalledWith(
+                1,
+                'default',
+                'default',
+            );
+            expect(valueCallback).toHaveBeenNthCalledWith(
+                2,
+                'update',
+                'default',
+            );
 
             elementCallback.mockReset();
             valueCallback.mockReset();
@@ -99,8 +114,16 @@ describe('DynamicProp', () => {
 
             expect(elementCallback).not.toHaveBeenCalled();
             expect(valueCallback).toHaveBeenCalledTimes(2);
-            expect(valueCallback).toHaveBeenNthCalledWith(1, 'update 2');
-            expect(valueCallback).toHaveBeenNthCalledWith(2, 'update 3');
+            expect(valueCallback).toHaveBeenNthCalledWith(
+                1,
+                'update 2',
+                'update',
+            );
+            expect(valueCallback).toHaveBeenNthCalledWith(
+                2,
+                'update 3',
+                'update 2',
+            );
         });
     });
 });

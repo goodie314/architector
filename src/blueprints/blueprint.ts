@@ -1,7 +1,6 @@
 import { BlueprintAttributes } from '../models/blueprint-attributes';
 import ElementRef from './utils/element-ref';
 import { EventHandler } from '../types/event-handler';
-import BlueprintList from './blueprint-list';
 import DynamicProp from './utils/dynamic-prop';
 import { ErrorMessages } from '../constants/error-messages';
 
@@ -94,7 +93,7 @@ export class Blueprint {
         return this;
     }
 
-    append(...components: (Blueprint | string | BlueprintList)[]) {
+    append(...components: (Blueprint | string)[]) {
         components.forEach((component) => this.plans.children.push(component));
         return this;
     }
@@ -134,8 +133,6 @@ export class Blueprint {
             .flatMap<string | HTMLElement>((child) => {
                 if (child instanceof Blueprint) {
                     return [Blueprint.build(child)];
-                } else if (child instanceof BlueprintList) {
-                    return BlueprintList.Build(child, elem);
                 } else {
                     return [child as string];
                 }

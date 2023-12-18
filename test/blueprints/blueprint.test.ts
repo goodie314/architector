@@ -1,6 +1,5 @@
 import { Blueprint } from '../../src/blueprints/blueprint';
 import ElementRef from '../../src/blueprints/utils/element-ref';
-import BlueprintList from '../../src/blueprints/blueprint-list';
 import DynamicProp from '../../src/blueprints/utils/dynamic-prop';
 import { ErrorMessages } from '../../src/constants/error-messages';
 
@@ -199,47 +198,23 @@ describe('Blueprint module', () => {
             expect(elem.textContent).toEqual('hello world!');
         });
 
-        test('correctly appends and builds BlueprintList', () => {
-            const describedList = new BlueprintList();
-            describedList.push('1', new Blueprint('div').id('inner1'));
-            describedList.push('2', new Blueprint('div').id('inner2'));
-
-            const elem = Blueprint.build(
-                new Blueprint('div').append(describedList),
-            );
-
-            expect(elem.children.length).toEqual(2);
-            expect(elem.children.item(0).id).toEqual('inner1');
-            expect(elem.children.item(1).id).toEqual('inner2');
-        });
-
         test('correctly appends multiple types to an element', () => {
-            const describedList = new BlueprintList();
-            describedList.push(
-                '1',
-                new Blueprint('p').id('list1').text('item 1'),
-            );
-            describedList.push(
-                '2',
-                new Blueprint('p').id('list2').text('item 2'),
-            );
-
             const elem = Blueprint.build(
                 new Blueprint('div').append(
-                    new Blueprint('h1').id('title').text('Title'),
-                    describedList,
-                    'extra',
+                    new Blueprint('h1').id('title').text('Hello'),
+                    'world',
+                    new Blueprint('span').id('span').text('!'),
                 ),
             );
 
-            expect(elem.children.length).toEqual(3);
+            expect(elem.children.length).toEqual(2);
             expect(elem.children.item(0).id).toEqual('title');
-            expect(elem.children.item(0).textContent).toEqual('Title');
+            expect(elem.children.item(0).textContent).toEqual('Hello');
 
-            expect(elem.children.item(1)).toEqual(describedList.get('1'));
-            expect(elem.children.item(2)).toEqual(describedList.get('2'));
+            expect(elem.children.item(1).id).toEqual('span');
+            expect(elem.children.item(1).textContent).toEqual('!');
 
-            expect(elem.textContent).toEqual('Titleitem 1item 2extra');
+            expect(elem.textContent).toEqual('Helloworld!');
         });
     });
 

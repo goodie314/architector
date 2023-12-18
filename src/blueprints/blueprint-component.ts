@@ -1,12 +1,6 @@
 import { Blueprint } from './blueprint';
 
 export default abstract class BlueprintComponent {
-    private readonly componentName: string;
-
-    protected constructor(componentName: string) {
-        this.componentName = componentName;
-    }
-
     abstract compose(): Blueprint;
 
     // utility methods to generate blueprints

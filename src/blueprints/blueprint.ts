@@ -10,6 +10,8 @@ export class Blueprint {
     private elementRef: ElementRef;
     private readonly selfRef = new ElementRef();
 
+    private dynamicClassNames: DynamicProp<string>[];
+
     constructor(tagName: string) {
         this.tagName = tagName;
         this.plans = {
@@ -18,6 +20,8 @@ export class Blueprint {
             children: [],
             handlers: {},
         };
+
+        this.dynamicClassNames = [];
     }
 
     id(value: string | DynamicProp<string>) {
@@ -32,8 +36,30 @@ export class Blueprint {
         return this;
     }
 
-    classNames(...values: string[]) {
-        this.plans.classNames.push(...values);
+    classNames(...values: (string | DynamicProp<string>)[]) {
+        values.forEach((value) => {
+            if (value instanceof DynamicProp) {
+                this.dynamicClassNames.push(value);
+            } else {
+                this.plans.classNames.push(value);
+            }
+        });
+
+        this.dynamicClassNames.forEach((prop) => {
+            prop.onElementChange(this.selfRef, (el) => (val, prev) => {
+                const keepPrev =
+                    this.plans.classNames.some(
+                        (className) => className === prev,
+                    ) ||
+                    this.dynamicClassNames.some(
+                        (otherProp) => otherProp.currentValue() === prev,
+                    );
+                if (!keepPrev) {
+                    el.classList.remove(prev);
+                }
+                el.classList.add(val);
+            });
+        });
         return this;
     }
 

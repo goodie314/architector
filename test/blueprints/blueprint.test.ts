@@ -59,6 +59,44 @@ describe('Blueprint module', () => {
             expect(elem.classList.contains('test1')).toBeTruthy();
             expect(elem.classList.contains('test2')).toBeTruthy();
         });
+
+        test('sets a single dynamic prop on an element', () => {
+            const prop = new DynamicProp('default');
+            const elem = Blueprint.build(new Blueprint('div').classNames(prop));
+
+            expect(elem.classList.length).toEqual(1);
+            expect(elem.classList.contains('default')).toBeTruthy();
+
+            prop.set('update');
+
+            expect(elem.classList.length).toEqual(1);
+            expect(elem.classList.contains('update')).toBeTruthy();
+        });
+
+        test('sets mixed class names on element. has className conflict with elementProp', () => {
+            const prop = new DynamicProp('default');
+            const prop2 = new DynamicProp('update');
+            const elem = Blueprint.build(
+                new Blueprint('div').classNames('default', prop, prop2),
+            );
+
+            expect(elem.classList.length).toEqual(2);
+            expect(elem.classList.contains('default')).toBeTruthy();
+            expect(elem.classList.contains('update')).toBeTruthy();
+
+            prop.set('update');
+
+            expect(elem.classList.length).toEqual(2);
+            expect(elem.classList.contains('default')).toBeTruthy();
+            expect(elem.classList.contains('update')).toBeTruthy();
+
+            prop2.set('update2');
+
+            expect(elem.classList.length).toEqual(3);
+            expect(elem.classList.contains('default')).toBeTruthy();
+            expect(elem.classList.contains('update')).toBeTruthy();
+            expect(elem.classList.contains('update2')).toBeTruthy();
+        });
     });
 
     describe('attribute', () => {

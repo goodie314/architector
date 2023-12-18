@@ -1,6 +1,6 @@
-import DescribableApplication from '../../src/structure/describable-application';
+import BlueprintApplication from '../../src/structure/blueprint-application';
 
-new DescribableApplication('todo')
+new BlueprintApplication('todo')
     .addPage('/', './src/page/home.js')
     .build()
     .then();

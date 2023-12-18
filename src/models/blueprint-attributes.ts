@@ -1,13 +1,13 @@
-import { Describer } from '../components/describer';
+import { Blueprint } from '../components/blueprint';
 import { EventHandler } from '../types/event-handler';
-import DescribedList from '../components/described-list';
+import BlueprintList from '../components/blueprint-list';
 
-export interface DescriberAttributes {
+export interface BlueprintAttributes {
     id?: string;
     classNames: string[];
     attributes: { [attributeName: string]: string };
     text?: string;
-    children: (Describer | string | DescribedList)[];
+    children: (Blueprint | string | BlueprintList)[];
     handlers: {
         [eventName: string]: EventHandler;
     };

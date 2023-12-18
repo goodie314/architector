@@ -1,11 +1,11 @@
 import SimpleHtmlComponent from './test-components/simple-html-component';
-import { Describer } from '../../src/components/describer';
+import { Blueprint } from '../../src/components/blueprint';
 
 describe('Describable component module', () => {
     describe('Simple html component', () => {
         test('successfully create component', () => {
             const comp = new SimpleHtmlComponent();
-            const el = Describer.build(comp.compose());
+            const el = Blueprint.build(comp.compose());
 
             expect(el.tagName).toEqual('DIV');
             expect(el.id).toEqual('test-id');

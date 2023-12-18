@@ -1,20 +1,20 @@
-import DescribableComponent from '../../../../src/components/describable-component';
-import { Describer } from '../../../../src/components/describer';
+import BlueprintComponent from '../../../../src/components/blueprint-component';
+import { Blueprint } from '../../../../src/components/blueprint';
 
-export default class PlainComponent extends DescribableComponent {
+export default class PlainComponent extends BlueprintComponent {
     constructor() {
         super('plain-component');
     }
 
-    compose(): Describer {
+    compose(): Blueprint {
         const li = Array(100000)
             .fill(0)
-            .map((n, i) => this.describe('li').text(`Item ${i}`));
-        return this.describe('div').append(
-            this.describe('h1').text('Hello world'),
-            this.describe('a').attribute('href', './demo').text('Demo page'),
-            this.describe('ul').append(...li),
-            this.describe('script').text(
+            .map((n, i) => this.blueprint('li').text(`Item ${i}`));
+        return this.blueprint('div').append(
+            this.blueprint('h1').text('Hello world'),
+            this.blueprint('a').attribute('href', './demo').text('Demo page'),
+            this.blueprint('ul').append(...li),
+            this.blueprint('script').text(
                 'window.onload=() => console.log(window.performance)',
             ),
         );

@@ -4,7 +4,7 @@ import cwd from '../util/cwd';
 import * as esbuild from 'esbuild';
 import { writeFileSafe } from '../util/file-util';
 
-export default class DescribableApplication {
+export default class BlueprintApplication {
     private readonly title: string;
     private pageMap: Map<string, string>;
     private outputDirName: string;

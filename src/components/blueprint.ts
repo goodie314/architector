@@ -1,11 +1,11 @@
-import { DescriberAttributes } from '../models/describer-attributes';
+import { BlueprintAttributes } from '../models/blueprint-attributes';
 import ElementRef from '../util/element-ref';
 import { EventHandler } from '../types/event-handler';
-import DescribedList from './described-list';
+import BlueprintList from './blueprint-list';
 
-export class Describer {
+export class Blueprint {
     private readonly tagName: string;
-    private described: DescriberAttributes;
+    private described: BlueprintAttributes;
     private elementRef: ElementRef<HTMLElement>;
 
     constructor(tagName: string) {
@@ -38,7 +38,7 @@ export class Describer {
         return this;
     }
 
-    append(...components: (Describer | string | DescribedList)[]) {
+    append(...components: (Blueprint | string | BlueprintList)[]) {
         components.forEach((component) =>
             this.described.children.push(component),
         );
@@ -59,7 +59,7 @@ export class Describer {
         return this.addEventListener('click', eventHandler);
     }
 
-    static build(describer: Describer) {
+    static build(describer: Blueprint) {
         const elem = document.createElement(describer.tagName);
         const describerAttributes = describer.described;
 
@@ -80,10 +80,10 @@ export class Describer {
 
         describerAttributes.children
             .flatMap<string | HTMLElement>((child) => {
-                if (child instanceof Describer) {
-                    return [Describer.build(child)];
-                } else if (child instanceof DescribedList) {
-                    return DescribedList.Build(child, elem);
+                if (child instanceof Blueprint) {
+                    return [Blueprint.build(child)];
+                } else if (child instanceof BlueprintList) {
+                    return BlueprintList.Build(child, elem);
                 } else {
                     return [child as string];
                 }

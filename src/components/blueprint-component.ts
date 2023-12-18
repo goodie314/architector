@@ -1,45 +1,45 @@
-import { Describer } from './describer';
+import { Blueprint } from './blueprint';
 
-export default abstract class DescribableComponent {
+export default abstract class BlueprintComponent {
     private readonly componentName: string;
 
     protected constructor(componentName: string) {
         this.componentName = componentName;
     }
 
-    abstract compose(): Describer;
+    abstract compose(): Blueprint;
 
     // utility methods to generate components
-    describe(tagName: string) {
-        return new Describer(tagName);
+    blueprint(tagName: string) {
+        return new Blueprint(tagName);
     }
     div() {
-        return this.describe('div');
+        return this.blueprint('div');
     }
     span() {
-        return this.describe('span');
+        return this.blueprint('span');
     }
     h(number: number) {
-        return this.describe(`h${number}`);
+        return this.blueprint(`h${number}`);
     }
     ul() {
-        return this.describe('ul');
+        return this.blueprint('ul');
     }
     li(text?: string) {
-        return this.describe('li').text(text);
+        return this.blueprint('li').text(text);
     }
     label(forName?: string) {
-        const label = this.describe('label');
+        const label = this.blueprint('label');
         if (forName) {
             label.attribute('for', forName);
         }
         return label;
     }
     button(text?: string) {
-        return this.describe('button').text(text);
+        return this.blueprint('button').text(text);
     }
     input(type?: string, name?: string) {
-        const input = this.describe('input');
+        const input = this.blueprint('input');
         if (type) {
             input.attribute('type', type);
         }

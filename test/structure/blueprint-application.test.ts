@@ -3,7 +3,7 @@
  */
 import fs from 'fs';
 import * as esbuild from 'esbuild';
-import DescribableApplication from '../../src/structure/describable-application';
+import BlueprintApplication from '../../src/structure/blueprint-application';
 import * as fileUtil from '../../src/util/file-util';
 
 jest.mock('../../src/util/cwd', () => '/base');
@@ -24,12 +24,12 @@ describe('Describable application module', () => {
         });
 
         test('valid path passed in', () => {
-            const app = new DescribableApplication('test');
+            const app = new BlueprintApplication('test');
             expect(
                 app.addPage(
                     '/test_test/ASDF-asf1234',
                     './describable-page.js',
-                ) instanceof DescribableApplication,
+                ) instanceof BlueprintApplication,
             ).toBeTruthy();
             expect(fsMock.existsSync).toHaveBeenCalledWith(
                 '/base/describable-page.js',
@@ -37,10 +37,10 @@ describe('Describable application module', () => {
         });
 
         test('throws error when url is passed twice', () => {
-            const app = new DescribableApplication('test');
+            const app = new BlueprintApplication('test');
             expect(
                 app.addPage('/test', './describable-page.js') instanceof
-                    DescribableApplication,
+                    BlueprintApplication,
             ).toBeTruthy();
             expect(() => app.addPage('/test', '')).toThrowError(
                 'URL /test is already mapped',
@@ -52,7 +52,7 @@ describe('Describable application module', () => {
 
         test('throws error when file path does not exist', () => {
             fsMock.existsSync.mockReturnValue(false);
-            const app = new DescribableApplication('test');
+            const app = new BlueprintApplication('test');
             expect(() =>
                 app.addPage('/test', './some-other/page'),
             ).toThrowError(
@@ -64,7 +64,7 @@ describe('Describable application module', () => {
         });
 
         test('throws error if url does not start with "/"', () => {
-            const app = new DescribableApplication('test');
+            const app = new BlueprintApplication('test');
             expect(() =>
                 app.addPage('test', './describable-page.js'),
             ).toThrowError(`test is invalid. Paths must start with /`);
@@ -72,7 +72,7 @@ describe('Describable application module', () => {
         });
 
         test('throws error if url contains extension', () => {
-            const app = new DescribableApplication('test');
+            const app = new BlueprintApplication('test');
             expect(() =>
                 app.addPage('/test/index.js', './describable-page.js'),
             ).toThrowError(
@@ -87,7 +87,7 @@ describe('Describable application module', () => {
         });
 
         test('throws error if app has no pages', async () => {
-            const app = new DescribableApplication('test');
+            const app = new BlueprintApplication('test');
             await expect(app.build()).rejects.toThrowError(
                 'Cannot build a describable application without any pages. Call addPage before calling build.',
             );
@@ -96,7 +96,7 @@ describe('Describable application module', () => {
         test('correctly builds one page', async () => {
             fsMock.existsSync.mockReturnValue(true);
 
-            const app = new DescribableApplication('test');
+            const app = new BlueprintApplication('test');
             app.addPage('/test', './page.js');
             await app.build();
 
@@ -116,7 +116,7 @@ describe('Describable application module', () => {
         test('builds one page with custom output directory', async () => {
             fsMock.existsSync.mockReturnValue(true);
 
-            const app = new DescribableApplication('test')
+            const app = new BlueprintApplication('test')
                 .outputDir('output')
                 .addPage('/test', './page.js');
             await app.build();

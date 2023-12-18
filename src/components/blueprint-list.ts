@@ -1,8 +1,8 @@
-import { Describer } from './describer';
+import { Blueprint } from './blueprint';
 import ElementRef from '../util/element-ref';
 import { ErrorMessages } from '../constants/error-messages';
 
-export default class DescribedList<K = string> {
+export default class BlueprintList<K = string> {
     private elementMap: Map<K, HTMLElement>;
     private order: K[];
     private parentElement: ElementRef<HTMLElement>;
@@ -21,11 +21,11 @@ export default class DescribedList<K = string> {
         return this.elementMap.get(id);
     }
 
-    async push(id: K, describer: Describer) {
+    async push(id: K, describer: Blueprint) {
         if (this.elementMap.has(id)) {
             throw new Error(ErrorMessages.DescribedList.duplicateId(id));
         }
-        const elem = Describer.build(describer);
+        const elem = Blueprint.build(describer);
 
         this.elementMap.set(id, elem);
         this.order.push(id);
@@ -34,20 +34,20 @@ export default class DescribedList<K = string> {
         parent.append(elem);
     }
 
-    async replaceById(id: K, describer: Describer) {
+    async replaceById(id: K, describer: Blueprint) {
         if (!this.elementMap.has(id)) {
             throw new Error(ErrorMessages.DescribedList.replaceByIdError(id));
         }
         const old = this.elementMap.get(id);
 
-        const elem = Describer.build(describer);
+        const elem = Blueprint.build(describer);
         this.elementMap.set(id, elem);
 
         old.replaceWith(elem);
         await this.parentElement.get();
     }
 
-    async replaceByIndex(index: number, describer: Describer) {
+    async replaceByIndex(index: number, describer: Blueprint) {
         if (index < 0 || index >= this.order.length) {
             throw new Error(
                 ErrorMessages.DescribedList.replaceByIndexError(index),
@@ -56,7 +56,7 @@ export default class DescribedList<K = string> {
         const id = this.order[index];
         const old = this.elementMap.get(id);
 
-        const elem = Describer.build(describer);
+        const elem = Blueprint.build(describer);
         this.elementMap.set(id, elem);
 
         old.replaceWith(elem);
@@ -77,7 +77,7 @@ export default class DescribedList<K = string> {
     async set(
         descriptions: {
             id: K;
-            describer: Describer;
+            describer: Blueprint;
         }[],
     ) {
         const updatedMap = new Map<K, HTMLElement>();
@@ -93,7 +93,7 @@ export default class DescribedList<K = string> {
                 const oldElem = this.elementMap.get(oldId);
                 const { id, describer } = descriptions[i];
                 const elem =
-                    this.elementMap.get(id) ?? Describer.build(describer);
+                    this.elementMap.get(id) ?? Blueprint.build(describer);
                 updatedOrder.push(id);
                 updatedMap.set(id, elem);
                 if (oldId !== id) {
@@ -110,7 +110,7 @@ export default class DescribedList<K = string> {
             else {
                 const { id, describer } = descriptions[i];
                 const elem =
-                    this.elementMap.get(id) ?? Describer.build(describer);
+                    this.elementMap.get(id) ?? Blueprint.build(describer);
                 updatedOrder.push(id);
                 updatedMap.set(id, elem);
                 const parent = await this.parentElement.get();
@@ -123,7 +123,7 @@ export default class DescribedList<K = string> {
     }
 
     static Build(
-        describedList: DescribedList<any>,
+        describedList: BlueprintList<any>,
         parentElement: HTMLElement,
     ) {
         describedList.parentElement.set(parentElement);
@@ -134,13 +134,13 @@ export default class DescribedList<K = string> {
 
     // possibly can't keep this method, can't think of a way to do it without
     // returning a promise which wouldn't be a very good flow for the user
-    static from<K>(descriptions: { id: K; describer: Describer }[]) {
-        const list = new DescribedList<K>();
+    static from<K>(descriptions: { id: K; describer: Blueprint }[]) {
+        const list = new BlueprintList<K>();
         descriptions.forEach((description) => {
             list.order.push(description.id);
             list.elementMap.set(
                 description.id,
-                Describer.build(description.describer),
+                Blueprint.build(description.describer),
             );
         });
 

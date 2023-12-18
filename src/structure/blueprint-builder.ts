@@ -1,10 +1,10 @@
-import { Describer } from '../components/describer';
+import { Blueprint } from '../components/blueprint';
 
-export default class DescribablePage {
-    private readonly rootComponent: Describer;
+export default class BlueprintBuilder {
+    private readonly rootComponent: Blueprint;
     private applicationContainer: Element;
 
-    constructor(rootComponent: Describer) {
+    constructor(rootComponent: Blueprint) {
         this.rootComponent = rootComponent;
         this.applicationContainer = document.body;
     }
@@ -15,7 +15,7 @@ export default class DescribablePage {
     }
 
     render() {
-        const app = Describer.build(this.rootComponent);
+        const app = Blueprint.build(this.rootComponent);
         this.applicationContainer.append(app);
     }
 }

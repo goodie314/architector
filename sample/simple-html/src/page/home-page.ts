@@ -1,4 +1,4 @@
-import DescribablePage from '../../../../src/structure/describable-page';
+import BlueprintBuilder from '../../../../src/structure/blueprint-builder';
 import PlainComponent from '../component/plain-component';
 
-new DescribablePage(new PlainComponent().compose()).render();
+new BlueprintBuilder(new PlainComponent().compose()).render();

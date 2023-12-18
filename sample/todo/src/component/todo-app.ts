@@ -1,8 +1,8 @@
-import DescribableComponent from '../../../../src/components/describable-component';
-import { Describer } from '../../../../src/components/describer';
+import BlueprintComponent from '../../../../src/components/blueprint-component';
+import { Blueprint } from '../../../../src/components/blueprint';
 import ElementRef from '../../../../src/util/element-ref';
 
-export default class TodoApp extends DescribableComponent {
+export default class TodoApp extends BlueprintComponent {
     private tasks: {
         id: number;
         description: string;
@@ -25,7 +25,7 @@ export default class TodoApp extends DescribableComponent {
         inputElem.value = '';
     }
 
-    compose(): Describer {
+    compose(): Blueprint {
         const lis = this.tasks.map((task) =>
             this.li(`ID: ${task.id} - ${task.description}`),
         );

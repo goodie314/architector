@@ -1,6 +1,6 @@
-import DescribableApplication from '../../src/structure/describable-application';
+import BlueprintApplication from '../../src/structure/blueprint-application';
 
-export const app = new DescribableApplication('Simple app')
+export const app = new BlueprintApplication('Simple app')
     .addPage('/', './src/page/home-page.ts')
     .addPage('/demo', './src/page/home-page.ts');
 

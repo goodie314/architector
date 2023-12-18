@@ -1,11 +1,11 @@
-import DescribableComponent from '../../../src/components/describable-component';
-import { Describer } from '../../../src/components/describer';
+import BlueprintComponent from '../../../src/components/blueprint-component';
+import { Blueprint } from '../../../src/components/blueprint';
 
-export default class SimpleHtmlComponent extends DescribableComponent {
+export default class SimpleHtmlComponent extends BlueprintComponent {
     constructor() {
         super('simple-html');
     }
-    compose(): Describer {
+    compose(): Blueprint {
         return this.div()
             .id('test-id')
             .classNames('class-1', 'class-2')

@@ -283,6 +283,80 @@ describe('Blueprint module', () => {
         });
     });
 
+    describe('Fragment', () => {
+        test('fragment renders in the root', () => {
+            const fragment = Blueprint.Fragment(
+                new Blueprint('div').id('id1'),
+                new Blueprint('div').id('id2'),
+            );
+
+            const elements = Blueprint.buildFragment(
+                fragment,
+                defaultBuilderContext,
+            );
+
+            expect(elements.length).toEqual(2);
+            expect(elements[0].id).toEqual('id1');
+            expect(elements[1].id).toEqual('id2');
+        });
+
+        test('fragment renders in parent blueprint', () => {
+            const fragment = Blueprint.Fragment(
+                new Blueprint('div').id('id1'),
+                new Blueprint('div').id('id2'),
+            );
+            const parent = Blueprint.build(
+                new Blueprint('div').id('root').append(fragment),
+                defaultBuilderContext,
+            );
+
+            expect(parent.id).toEqual('root');
+            expect(parent.children.length).toEqual(2);
+            expect(parent.children.item(0).id).toEqual('id1');
+            expect(parent.children.item(1).id).toEqual('id2');
+        });
+
+        test('append fragment in the middle of other items', () => {
+            const fragment = Blueprint.Fragment(
+                new Blueprint('div').id('id1'),
+                new Blueprint('div').id('id2'),
+            );
+            const parent = Blueprint.build(
+                new Blueprint('div')
+                    .id('root')
+                    .append(new Blueprint('h1').id('title'), fragment, 'Hello'),
+                defaultBuilderContext,
+            );
+
+            expect(parent.id).toEqual('root');
+            expect(parent.children.length).toEqual(3);
+            expect(parent.children.item(0).id).toEqual('title');
+            expect(parent.children.item(1).id).toEqual('id1');
+            expect(parent.children.item(2).id).toEqual('id2');
+            expect(parent.textContent).toEqual('Hello');
+        });
+
+        test('throw error when calling build with a fragment', () => {
+            const fragment = Blueprint.Fragment();
+            expect(() =>
+                Blueprint.build(fragment, defaultBuilderContext),
+            ).toThrow(
+                ErrorMessages.Blueprint.attemptToBuildFragmentAsBlueprint,
+            );
+        });
+
+        test('throw error when calling buildFragment with a regular blueprint', () => {
+            expect(() =>
+                Blueprint.buildFragment(
+                    new Blueprint('div'),
+                    defaultBuilderContext,
+                ),
+            ).toThrow(
+                ErrorMessages.Blueprint.attemptToBuildBlueprintAsFragment,
+            );
+        });
+    });
+
     describe('build', () => {
         const buildSpy = jest.spyOn(Blueprint, 'build');
 

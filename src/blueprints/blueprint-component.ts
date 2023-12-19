@@ -7,6 +7,11 @@ export default abstract class BlueprintComponent {
     blueprint(tagName: string) {
         return new Blueprint(tagName);
     }
+
+    fragment(...blueprints: Blueprint[]) {
+        return Blueprint.Fragment(...blueprints);
+    }
+
     div() {
         return this.blueprint('div');
     }

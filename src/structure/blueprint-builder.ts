@@ -15,9 +15,18 @@ export default class BlueprintBuilder {
     }
 
     render() {
-        const app = Blueprint.build(this.rootComponent, {
-            parentElem: this.applicationContainer,
-        });
-        this.applicationContainer.append(app);
+        if (this.rootComponent.isFragment()) {
+            const elements = Blueprint.buildFragment(this.rootComponent, {
+                parentElem: this.applicationContainer,
+            });
+            elements.forEach((element) =>
+                this.applicationContainer.append(element),
+            );
+        } else {
+            const app = Blueprint.build(this.rootComponent, {
+                parentElem: this.applicationContainer,
+            });
+            this.applicationContainer.append(app);
+        }
     }
 }

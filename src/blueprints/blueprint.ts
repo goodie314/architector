@@ -7,6 +7,7 @@ import { BlueprintBuilderContext } from '../models/blueprint-builder-context';
 
 export class Blueprint {
     private readonly tagName: string;
+    private _isFragment: boolean;
     private plans: BlueprintAttributes;
     private elementRef: ElementRef;
     private readonly selfRef = new ElementRef();
@@ -15,6 +16,7 @@ export class Blueprint {
 
     constructor(tagName: string) {
         this.tagName = tagName;
+        this._isFragment = false;
         this.plans = {
             classNames: [],
             attributes: {},
@@ -23,6 +25,10 @@ export class Blueprint {
         };
 
         this.dynamicClassNames = [];
+    }
+
+    isFragment() {
+        return this._isFragment;
     }
 
     id(value: string | DynamicProp<string>) {
@@ -113,10 +119,22 @@ export class Blueprint {
         return this.addEventListener('click', eventHandler);
     }
 
+    static Fragment(...blueprints: Blueprint[]) {
+        const fragment = new Blueprint('fragment');
+        blueprints.forEach((blueprint) => fragment.append(blueprint));
+        fragment._isFragment = true;
+        return fragment;
+    }
+
     static build(
         blueprint: Blueprint,
         builderContext: BlueprintBuilderContext,
-    ) {
+    ): HTMLElement {
+        if (blueprint.isFragment()) {
+            throw new Error(
+                ErrorMessages.Blueprint.attemptToBuildFragmentAsBlueprint,
+            );
+        }
         const elem = document.createElement(blueprint.tagName);
         const plans = blueprint.plans;
 
@@ -136,11 +154,15 @@ export class Blueprint {
         plans.children
             .flatMap<string | HTMLElement>((child) => {
                 if (child instanceof Blueprint) {
-                    return [
-                        Blueprint.build(child, {
+                    if (child.isFragment()) {
+                        return Blueprint.buildFragment(child, {
                             parentElem: elem,
-                        }),
-                    ];
+                        });
+                    } else {
+                        return Blueprint.build(child, {
+                            parentElem: elem,
+                        });
+                    }
                 } else {
                     return [child as string];
                 }
@@ -164,5 +186,20 @@ export class Blueprint {
         }
 
         return elem;
+    }
+
+    static buildFragment(
+        fragment: Blueprint,
+        builderContext: BlueprintBuilderContext,
+    ) {
+        if (!fragment.isFragment()) {
+            throw new Error(
+                ErrorMessages.Blueprint.attemptToBuildBlueprintAsFragment,
+            );
+        }
+
+        return (fragment.plans.children as Blueprint[]).flatMap((child) => {
+            return Blueprint.build(child, builderContext);
+        });
     }
 }

@@ -198,6 +198,10 @@ export class Blueprint {
             );
         }
 
+        if (fragment.elementRef) {
+            fragment.elementRef.set(builderContext.parentElem);
+        }
+
         return (fragment.plans.children as Blueprint[]).flatMap((child) => {
             return Blueprint.build(child, builderContext);
         });

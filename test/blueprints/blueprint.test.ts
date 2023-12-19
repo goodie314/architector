@@ -336,6 +336,27 @@ describe('Blueprint module', () => {
             expect(parent.textContent).toEqual('Hello');
         });
 
+        test('attaching reference to a fragment returns the parent element', async () => {
+            const ref = new ElementRef();
+            const fragment = Blueprint.Fragment().ref(ref);
+            Blueprint.buildFragment(fragment, defaultBuilderContext);
+
+            const parent = await ref.get();
+            expect(parent).toEqual(document.body);
+        });
+
+        test('attaching reference to a fragment returns the parent blueprint element', async () => {
+            const ref = new ElementRef();
+            const fragment = Blueprint.Fragment().ref(ref);
+            const element = Blueprint.build(
+                new Blueprint('div').append(fragment),
+                defaultBuilderContext,
+            );
+            const parent = await ref.get();
+
+            expect(parent).toEqual(element);
+        });
+
         test('throw error when calling build with a fragment', () => {
             const fragment = Blueprint.Fragment();
             expect(() =>

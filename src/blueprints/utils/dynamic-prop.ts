@@ -1,4 +1,5 @@
 import ElementRef from './element-ref';
+import { clone } from '../../util/value-util';
 
 export default class DynamicProp<T> {
     private prevValue: T;
@@ -6,13 +7,13 @@ export default class DynamicProp<T> {
     private callbacks: ((value: T, prev: T) => void)[];
 
     constructor(defaultValue?: T) {
-        this.prevValue = defaultValue;
-        this.value = defaultValue;
+        this.prevValue = clone(defaultValue);
+        this.value = clone(defaultValue);
         this.callbacks = [];
     }
 
     currentValue() {
-        return this.value;
+        return clone(this.value);
     }
 
     onChange(callback: (value: T, prev: T) => void) {
@@ -32,8 +33,8 @@ export default class DynamicProp<T> {
     }
 
     set(value: T) {
-        this.prevValue = this.value;
-        this.value = value;
+        this.prevValue = clone(this.value);
+        this.value = clone(value);
         this.callbacks.forEach((callback) =>
             callback(this.value, this.prevValue),
         );

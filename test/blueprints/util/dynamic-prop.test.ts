@@ -125,5 +125,27 @@ describe('DynamicProp', () => {
                 'update 2',
             );
         });
+
+        test('callback returns prev value as well', () => {
+            const cb = jest.fn();
+            const defaultValue = {
+                id: 1,
+                value: 'test',
+            };
+            const prop = new DynamicProp(defaultValue);
+            prop.onChange(cb);
+            prop.set({
+                id: 2,
+                value: 'update',
+            });
+
+            expect(cb).toHaveBeenCalledTimes(2);
+            expect(cb).toHaveBeenNthCalledWith(1, defaultValue, defaultValue);
+            expect(cb).toHaveBeenNthCalledWith(
+                2,
+                { id: 2, value: 'update' },
+                defaultValue,
+            );
+        });
     });
 });

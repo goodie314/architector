@@ -29,4 +29,14 @@ export default class BlueprintBuilder {
             this.applicationContainer.append(app);
         }
     }
+
+    static build(blueprint: Blueprint) {
+        if (blueprint.isFragment()) {
+            const container = document.createElement('div');
+            Blueprint.buildFragment(blueprint, { parentElem: container });
+            return container;
+        }
+
+        return Blueprint.build(blueprint, { parentElem: null });
+    }
 }

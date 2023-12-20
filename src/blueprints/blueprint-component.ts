@@ -4,40 +4,43 @@ export default abstract class BlueprintComponent {
     abstract compose(): Blueprint;
 
     // utility methods to generate blueprints
-    blueprint(tagName: string) {
+    protected blueprint(tagName: string) {
         return new Blueprint(tagName);
     }
 
-    fragment(...blueprints: Blueprint[]) {
+    protected fragment(...blueprints: Blueprint[]) {
         return Blueprint.Fragment(...blueprints);
     }
 
-    div() {
+    protected div() {
         return this.blueprint('div');
     }
-    span() {
+    protected span() {
         return this.blueprint('span');
     }
-    h(number: number) {
+    protected h(number: number) {
         return this.blueprint(`h${number}`);
     }
-    ul() {
+    protected ul() {
         return this.blueprint('ul');
     }
-    li(text?: string) {
+    protected li(text?: string) {
         return this.blueprint('li').text(text);
     }
-    label(forName?: string) {
+    protected form() {
+        return this.blueprint('form');
+    }
+    protected label(forName?: string) {
         const label = this.blueprint('label');
         if (forName) {
             label.attribute('for', forName);
         }
         return label;
     }
-    button(text?: string) {
+    protected button(text?: string) {
         return this.blueprint('button').text(text);
     }
-    input(type?: string, name?: string) {
+    protected input(type?: string, name?: string) {
         const input = this.blueprint('input');
         if (type) {
             input.attribute('type', type);
@@ -47,7 +50,7 @@ export default abstract class BlueprintComponent {
         }
         return input;
     }
-    checkbox() {
+    protected checkbox() {
         return this.input('checkbox');
     }
 }

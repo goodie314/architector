@@ -1,7 +1,14 @@
 import { Blueprint } from './blueprint';
+import BlueprintBuildContext from '../structure/blueprint-build-context';
 
 export default abstract class BlueprintComponent {
+    protected context: BlueprintBuildContext;
+
     abstract compose(): Blueprint;
+
+    attachContext(blueprintContext: BlueprintBuildContext) {
+        this.context = blueprintContext;
+    }
 
     // utility methods to generate blueprints
     protected blueprint(tagName: string) {

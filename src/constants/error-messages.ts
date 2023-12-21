@@ -7,4 +7,8 @@ export const ErrorMessages = {
         attemptToBuildBlueprintAsFragment:
             'Cannot build this element as it is a blueprint. Call Blueprint.build instead',
     },
+    BlueprintService: {
+        noSuchServiceTask: (serviceName: string, name: string) =>
+            `Service ${serviceName} does not have a registered function ${name}`,
+    },
 };

@@ -2,10 +2,14 @@ import { Blueprint } from '../../src/blueprints/blueprint';
 import ElementRef from '../../src/blueprints/utils/element-ref';
 import DynamicProp from '../../src/blueprints/utils/dynamic-prop';
 import { ErrorMessages } from '../../src/constants/error-messages';
-import { BlueprintBuilderContext } from '../../src/models/blueprint-builder-context';
+import { BlueprintBuilderOptions } from '../../src/models/blueprint-builder-options';
+import BlueprintBuildContext from '../../src/structure/blueprint-build-context';
+import CustomContextComponent from './test-components/custom-context-component';
+import BlueprintService from '../../src/structure/blueprint-service';
 
-const defaultBuilderContext: BlueprintBuilderContext = {
+const defaultBuilderContext: BlueprintBuilderOptions = {
     parentElem: document.body,
+    context: new BlueprintBuildContext(),
 };
 
 describe('Blueprint module', () => {
@@ -393,8 +397,69 @@ describe('Blueprint module', () => {
                 defaultBuilderContext,
             );
             expect(buildSpy).toHaveBeenNthCalledWith(2, subBlueprint, {
+                ...defaultBuilderContext,
                 parentElem: elem,
             });
+        });
+
+        test('passes context down chain with build context', async () => {
+            const serviceFn = jest
+                .fn()
+                .mockReturnValue(Promise.resolve('done'));
+            const component = new CustomContextComponent();
+            const attachContextSpy = jest.spyOn(component, 'attachContext');
+            const context = new BlueprintBuildContext().registerService(
+                new BlueprintService('testService').registerFunction(
+                    'fn',
+                    serviceFn,
+                ),
+            );
+            Blueprint.build(component, {
+                ...defaultBuilderContext,
+                context,
+            });
+
+            expect(attachContextSpy).toHaveBeenCalledTimes(1);
+            expect(attachContextSpy).toHaveBeenCalledWith(context);
+
+            const value = await component.callServiceFn('testService', 'fn');
+            expect(serviceFn).toHaveBeenCalledTimes(1);
+            expect(serviceFn).toHaveBeenCalledWith();
+            expect(value).toEqual('done');
+        });
+
+        test('service call correctly calls closest context', async () => {
+            const parentFn = jest.fn().mockReturnValue('parent');
+            const childFn = jest.fn().mockReturnValue('child');
+            const parentContext = new BlueprintBuildContext().registerService(
+                new BlueprintService('service')
+                    .registerFunction('parentFn', parentFn)
+                    .registerFunction('fn', () => fail()),
+            );
+            const childContext = new BlueprintBuildContext().registerService(
+                new BlueprintService('service').registerFunction('fn', childFn),
+            );
+
+            const component = new CustomContextComponent(childContext);
+            const attachContextSpy = jest.spyOn(component, 'attachContext');
+
+            Blueprint.build(new Blueprint('div').append(component), {
+                ...defaultBuilderContext,
+                context: parentContext,
+            });
+
+            expect(attachContextSpy).toHaveBeenCalledTimes(1);
+            expect(attachContextSpy).toHaveBeenCalledWith(parentContext);
+
+            let value = await component.callServiceFn('service', 'fn');
+            expect(childFn).toHaveBeenCalledTimes(1);
+            expect(childFn).toHaveBeenCalledWith();
+            expect(value).toEqual('child');
+
+            value = await component.callServiceFn('service', 'parentFn');
+            expect(parentFn).toHaveBeenCalledTimes(1);
+            expect(parentFn).toHaveBeenCalledWith();
+            expect(value).toEqual('parent');
         });
     });
 });

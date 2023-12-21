@@ -1,9 +1,11 @@
 import ElementRef from '../../../src/blueprints/utils/element-ref';
 import { Blueprint } from '../../../src/blueprints/blueprint';
-import { BlueprintBuilderContext } from '../../../src/models/blueprint-builder-context';
+import { BlueprintBuilderOptions } from '../../../src/models/blueprint-builder-options';
+import BlueprintBuildContext from '../../../src/structure/blueprint-build-context';
 
-const defaultBuilderContext: BlueprintBuilderContext = {
+const defaultBuilderContext: BlueprintBuilderOptions = {
     parentElem: document.body,
+    context: new BlueprintBuildContext(),
 };
 describe('ElementRef module', () => {
     test('getter and setter', (done) => {

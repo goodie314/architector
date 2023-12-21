@@ -3,7 +3,8 @@ import ElementRef from './utils/element-ref';
 import { EventHandler } from '../types/event-handler';
 import DynamicProp from './utils/dynamic-prop';
 import { ErrorMessages } from '../constants/error-messages';
-import { BlueprintBuilderContext } from '../models/blueprint-builder-context';
+import { BlueprintBuilderOptions } from '../models/blueprint-builder-options';
+import BlueprintComponent from './blueprint-component';
 
 export class Blueprint {
     private readonly tagName: string;
@@ -100,7 +101,7 @@ export class Blueprint {
         return this;
     }
 
-    append(...components: (Blueprint | string)[]) {
+    append(...components: (Blueprint | BlueprintComponent | string)[]) {
         components.forEach((component) => this.plans.children.push(component));
         return this;
     }
@@ -127,9 +128,14 @@ export class Blueprint {
     }
 
     static build(
-        blueprint: Blueprint,
-        builderContext: BlueprintBuilderContext,
+        blueprint: Blueprint | BlueprintComponent,
+        builderContext: BlueprintBuilderOptions,
     ): HTMLElement {
+        if (blueprint instanceof BlueprintComponent) {
+            blueprint.attachContext(builderContext.context);
+            blueprint = blueprint.compose();
+        }
+
         if (blueprint.isFragment()) {
             throw new Error(
                 ErrorMessages.Blueprint.attemptToBuildFragmentAsBlueprint,
@@ -156,13 +162,22 @@ export class Blueprint {
                 if (child instanceof Blueprint) {
                     if (child.isFragment()) {
                         return Blueprint.buildFragment(child, {
+                            ...builderContext,
                             parentElem: elem,
                         });
                     } else {
                         return Blueprint.build(child, {
+                            ...builderContext,
                             parentElem: elem,
                         });
                     }
+                } else if (child instanceof BlueprintComponent) {
+                    const context = child.attachContext(builderContext.context);
+                    return Blueprint.build(child.compose(), {
+                        ...builderContext,
+                        context,
+                        parentElem: elem,
+                    });
                 } else {
                     return [child as string];
                 }
@@ -190,7 +205,7 @@ export class Blueprint {
 
     static buildFragment(
         fragment: Blueprint,
-        builderContext: BlueprintBuilderContext,
+        builderContext: BlueprintBuilderOptions,
     ) {
         if (!fragment.isFragment()) {
             throw new Error(

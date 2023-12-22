@@ -5,13 +5,14 @@ import { BlueprintBuilderOptions } from '../models/blueprint-builder-options';
 import { ErrorMessages } from '../constants/error-messages';
 
 export default class BlueprintBuilder {
-    private readonly rootComponent: Blueprint;
+    private readonly rootComponent: Blueprint | BlueprintComponent;
     private applicationContainer: HTMLElement;
     private blueprintContext: BlueprintContext;
 
-    constructor(rootComponent: Blueprint) {
+    constructor(rootComponent: Blueprint | BlueprintComponent) {
         this.rootComponent = rootComponent;
         this.applicationContainer = document.body;
+        this.blueprintContext = BlueprintContext.createContext();
     }
 
     container(applicationContainer: HTMLElement) {
@@ -25,7 +26,13 @@ export default class BlueprintBuilder {
     }
 
     render() {
-        if (this.rootComponent.isFragment) {
+        if (this.rootComponent instanceof BlueprintComponent) {
+            const app = BlueprintBuilder.buildBlueprint(this.rootComponent, {
+                parentElem: this.applicationContainer,
+                context: this.blueprintContext,
+            });
+            this.applicationContainer.append(app);
+        } else if (this.rootComponent.isFragment) {
             const elements = BlueprintBuilder.buildFragment(
                 this.rootComponent,
                 {

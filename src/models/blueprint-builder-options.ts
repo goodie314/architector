@@ -1,6 +1,6 @@
-import BlueprintBuildContext from '../structure/blueprint-build-context';
+import BlueprintContext from '../structure/blueprint-context';
 
 export interface BlueprintBuilderOptions {
     parentElem: HTMLElement;
-    context: BlueprintBuildContext;
+    context?: BlueprintContext;
 }

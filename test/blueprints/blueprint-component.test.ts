@@ -1,15 +1,13 @@
 import SimpleHtmlComponent from './test-components/simple-html-component';
 import { Blueprint } from '../../src/blueprints/blueprint';
-import BlueprintBuildContext from '../../src/structure/blueprint-build-context';
+import BlueprintContext from '../../src/structure/blueprint-context';
+import BlueprintBuilder from '../../src/structure/blueprint-builder';
 
 describe('Describable component module', () => {
     describe('Simple html component', () => {
         test('successfully create component', () => {
             const comp = new SimpleHtmlComponent();
-            const el = Blueprint.build(comp.compose(), {
-                parentElem: document.body,
-                context: new BlueprintBuildContext(),
-            });
+            const el = BlueprintBuilder.build(comp);
 
             expect(el.tagName).toEqual('DIV');
             expect(el.id).toEqual('test-id');

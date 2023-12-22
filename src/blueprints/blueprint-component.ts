@@ -1,20 +1,19 @@
 import { Blueprint } from './blueprint';
-import BlueprintBuildContext from '../structure/blueprint-build-context';
+import BlueprintContext from '../structure/blueprint-context';
 
 export default abstract class BlueprintComponent {
-    protected context: BlueprintBuildContext;
+    public context: BlueprintContext;
 
-    constructor(context = new BlueprintBuildContext()) {
-        this.context = context;
+    constructor(componentName = 'default') {
+        if (!this.context) {
+            this.context = BlueprintContext.createContext(componentName);
+        }
+        if (componentName) {
+            this.context.attachComponent(this, componentName);
+        }
     }
 
     abstract compose(): Blueprint;
-
-    attachContext(blueprintContext: BlueprintBuildContext) {
-        blueprintContext.childContext(this.context);
-
-        return this.context;
-    }
 
     // utility methods to generate blueprints
     protected blueprint(tagName: string) {

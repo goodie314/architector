@@ -1,9 +1,12 @@
 import BlueprintComponent from '../../../src/blueprints/blueprint-component';
-import BlueprintBuildContext from '../../../src/structure/blueprint-build-context';
+import BlueprintContext from '../../../src/structure/blueprint-context';
 
 export default class CustomContextComponent extends BlueprintComponent {
-    constructor(context = new BlueprintBuildContext()) {
-        super(context);
+    constructor(context?: BlueprintContext) {
+        super('test');
+        if (context) {
+            this.context = context;
+        }
     }
     callServiceFn(serviceName: string, taskName: string) {
         return new Promise((resolve) => {

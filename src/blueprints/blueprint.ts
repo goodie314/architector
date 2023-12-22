@@ -3,22 +3,21 @@ import ElementRef from './utils/element-ref';
 import { EventHandler } from '../types/event-handler';
 import DynamicProp from './utils/dynamic-prop';
 import { ErrorMessages } from '../constants/error-messages';
-import { BlueprintBuilderOptions } from '../models/blueprint-builder-options';
 import BlueprintComponent from './blueprint-component';
 
 export class Blueprint {
-    private readonly tagName: string;
+    private readonly _tagName: string;
     private _isFragment: boolean;
-    private plans: BlueprintAttributes;
+    private readonly _plans: BlueprintAttributes;
     private elementRef: ElementRef;
     private readonly selfRef = new ElementRef();
 
     private dynamicClassNames: DynamicProp<string>[];
 
     constructor(tagName: string) {
-        this.tagName = tagName;
+        this._tagName = tagName;
         this._isFragment = false;
-        this.plans = {
+        this._plans = {
             classNames: [],
             attributes: {},
             children: [],
@@ -28,7 +27,15 @@ export class Blueprint {
         this.dynamicClassNames = [];
     }
 
-    isFragment() {
+    get tagName() {
+        return this._tagName;
+    }
+
+    get plans() {
+        return this._plans;
+    }
+
+    get isFragment() {
         return this._isFragment;
     }
 
@@ -39,7 +46,7 @@ export class Blueprint {
                 (element) => (value) => (element.id = value),
             );
         } else {
-            this.plans.id = value;
+            this._plans.id = value;
         }
         return this;
     }
@@ -49,14 +56,14 @@ export class Blueprint {
             if (value instanceof DynamicProp) {
                 this.dynamicClassNames.push(value);
             } else {
-                this.plans.classNames.push(value);
+                this._plans.classNames.push(value);
             }
         });
 
         this.dynamicClassNames.forEach((prop) => {
             prop.onElementChange(this.selfRef, (el) => (val, prev) => {
                 const keepPrev =
-                    this.plans.classNames.some(
+                    this._plans.classNames.some(
                         (className) => className === prev,
                     ) ||
                     this.dynamicClassNames.some(
@@ -72,7 +79,7 @@ export class Blueprint {
     }
 
     attribute(name: string, value: string | DynamicProp<string>) {
-        if (this.plans.attributes[name]) {
+        if (this._plans.attributes[name]) {
             throw new Error(
                 ErrorMessages.Blueprint.duplicateAttributeKey(name),
             );
@@ -84,7 +91,7 @@ export class Blueprint {
                 }
             });
         } else {
-            this.plans.attributes[name] = value;
+            this._plans.attributes[name] = value;
         }
         return this;
     }
@@ -96,13 +103,13 @@ export class Blueprint {
                 (el) => (value) => (el.textContent = value),
             );
         } else {
-            this.plans.text = text;
+            this._plans.text = text;
         }
         return this;
     }
 
     append(...components: (Blueprint | BlueprintComponent | string)[]) {
-        components.forEach((component) => this.plans.children.push(component));
+        components.forEach((component) => this._plans.children.push(component));
         return this;
     }
 
@@ -112,7 +119,7 @@ export class Blueprint {
     }
 
     addEventListener(eventName: string, handler: EventHandler) {
-        this.plans.handlers[eventName] = handler;
+        this._plans.handlers[eventName] = handler;
         return this;
     }
 
@@ -120,105 +127,15 @@ export class Blueprint {
         return this.addEventListener('click', eventHandler);
     }
 
+    setElement(element: HTMLElement) {
+        this.selfRef?.set(element);
+        this.elementRef?.set(element);
+    }
+
     static Fragment(...blueprints: Blueprint[]) {
         const fragment = new Blueprint('fragment');
         blueprints.forEach((blueprint) => fragment.append(blueprint));
         fragment._isFragment = true;
         return fragment;
-    }
-
-    static build(
-        blueprint: Blueprint | BlueprintComponent,
-        builderContext: BlueprintBuilderOptions,
-    ): HTMLElement {
-        if (blueprint instanceof BlueprintComponent) {
-            blueprint.attachContext(builderContext.context);
-            blueprint = blueprint.compose();
-        }
-
-        if (blueprint.isFragment()) {
-            throw new Error(
-                ErrorMessages.Blueprint.attemptToBuildFragmentAsBlueprint,
-            );
-        }
-        const elem = document.createElement(blueprint.tagName);
-        const plans = blueprint.plans;
-
-        if (plans.id) {
-            elem.id = plans.id;
-        }
-        if (plans.text) {
-            elem.textContent = plans.text;
-        }
-
-        plans.classNames.forEach((className) => elem.classList.add(className));
-
-        Object.entries(plans.attributes).forEach(([key, value]) =>
-            elem.setAttribute(key, value),
-        );
-
-        plans.children
-            .flatMap<string | HTMLElement>((child) => {
-                if (child instanceof Blueprint) {
-                    if (child.isFragment()) {
-                        return Blueprint.buildFragment(child, {
-                            ...builderContext,
-                            parentElem: elem,
-                        });
-                    } else {
-                        return Blueprint.build(child, {
-                            ...builderContext,
-                            parentElem: elem,
-                        });
-                    }
-                } else if (child instanceof BlueprintComponent) {
-                    const context = child.attachContext(builderContext.context);
-                    return Blueprint.build(child.compose(), {
-                        ...builderContext,
-                        context,
-                        parentElem: elem,
-                    });
-                } else {
-                    return [child as string];
-                }
-            })
-            .forEach((child) => elem.append(child));
-
-        Object.entries(plans.handlers).forEach(([eventName, eventHandler]) =>
-            elem.addEventListener(eventName, (event) => {
-                if (!(event.currentTarget instanceof Element)) {
-                    throw new Error(
-                        'Internal error. It should not be possible to attach an event listener here where an element is not the target',
-                    );
-                }
-                return eventHandler(event.currentTarget, event);
-            }),
-        );
-
-        blueprint.selfRef.set(elem);
-        if (blueprint.elementRef) {
-            blueprint.elementRef.set(elem);
-        }
-
-        return elem;
-    }
-
-    static buildFragment(
-        fragment: Blueprint,
-        builderContext: BlueprintBuilderOptions,
-    ) {
-        if (!fragment.isFragment()) {
-            throw new Error(
-                ErrorMessages.Blueprint.attemptToBuildBlueprintAsFragment,
-            );
-        }
-
-        if (fragment.elementRef) {
-            fragment.elementRef.set(builderContext.parentElem);
-        }
-
-        return (fragment.plans.children as Blueprint[]).flatMap((child) => {
-            return Blueprint.build(child, builderContext);
-        });
     }
 }

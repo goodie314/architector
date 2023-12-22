@@ -1,11 +1,11 @@
-import BlueprintBuildContext from '../../src/structure/blueprint-build-context';
+import BlueprintContext from '../../src/structure/blueprint-context';
 import BlueprintService from '../../src/structure/blueprint-service';
 
 describe('BlueprintBuildContext', () => {
     describe('services', () => {
         test('calls callback upon service completion', (done) => {
             const task = jest.fn().mockReturnValue('complete');
-            const context = new BlueprintBuildContext().registerService(
+            const context = BlueprintContext.createContext().registerService(
                 new BlueprintService('testService').registerFunction(
                     'testFn',
                     task,
@@ -29,7 +29,7 @@ describe('BlueprintBuildContext', () => {
 
         test('calls task that does not exist', () => {
             const callback = jest.fn();
-            const context = new BlueprintBuildContext();
+            const context = BlueprintContext.createContext();
             context.queueTask('testService', 'task', callback);
             expect(callback).not.toHaveBeenCalled();
         });
@@ -38,13 +38,13 @@ describe('BlueprintBuildContext', () => {
             const serviceFn = jest
                 .fn()
                 .mockReturnValue(Promise.resolve('done'));
-            const parent = new BlueprintBuildContext().registerService(
+            const parent = BlueprintContext.createContext().registerService(
                 new BlueprintService('service').registerFunction(
                     'fn',
                     serviceFn,
                 ),
             );
-            const context = new BlueprintBuildContext();
+            const context = BlueprintContext.createContext();
             context.queueTask(
                 'service',
                 'fn',
@@ -59,7 +59,7 @@ describe('BlueprintBuildContext', () => {
 
             expect(serviceFn).not.toHaveBeenCalled();
 
-            parent.childContext(context);
+            BlueprintContext.attachContext(parent, context);
         });
     });
 });

@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BlueprintHTMLBuilder render blueprint component as html 1`] = `
+"<div id="test-id" class="class-1 class-2" test="test-attribute">
+	Hello
+</div>"
+`;
+
+exports[`BlueprintHTMLBuilder render multi level blueprint as html 1`] = `
+"<div>
+	<div id="div1">
+		Sup
+	</div>
+	<div>
+		<span>
+			hom
+		</span>
+		<span>
+			ie
+		</span>
+	</div>
+	<div>
+		??
+	</div>
+</div>"
+`;
+
+exports[`BlueprintHTMLBuilder render single blueprint as HTML 1`] = `
+"<div id="testId" class="class1 class2" name="testName" att2="testAtt">
+	Hello world
+</div>"
+`;
+
+exports[`BlueprintHTMLBuilder render string as html 1`] = `
+"<div>
+	hello
+	world
+</div>"
+`;

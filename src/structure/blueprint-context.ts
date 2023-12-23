@@ -1,6 +1,6 @@
 import BlueprintService from './blueprint-service';
-import { GenericCallback } from '../models/generic-callback';
 import BlueprintComponent from '../blueprints/blueprint-component';
+import { GenericCallback } from '../models/types';
 
 export default class BlueprintContext<
     T extends BlueprintComponent = BlueprintComponent,

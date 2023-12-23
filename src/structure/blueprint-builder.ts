@@ -3,6 +3,7 @@ import BlueprintContext from './blueprint-context';
 import BlueprintComponent from '../blueprints/blueprint-component';
 import { BlueprintBuilderOptions } from '../models/blueprint-builder-options';
 import { ErrorMessages } from '../constants/error-messages';
+import { BlueprintRenderable } from '../models/types';
 
 export default class BlueprintBuilder {
     private readonly rootComponent: Blueprint | BlueprintComponent;
@@ -53,9 +54,9 @@ export default class BlueprintBuilder {
     }
 
     static build(
-        blueprint: Blueprint | BlueprintComponent,
+        blueprint: BlueprintRenderable,
         context = BlueprintContext.createContext(),
-    ) {
+    ): HTMLElement {
         if (blueprint instanceof BlueprintComponent) {
             BlueprintContext.attachContext(context, blueprint.context);
             blueprint = blueprint.compose();
@@ -128,11 +129,20 @@ export default class BlueprintBuilder {
                         builderContext.context,
                         child.context,
                     );
-                    return BlueprintBuilder.buildBlueprint(child.compose(), {
-                        ...builderContext,
-                        context,
-                        parentElem: elem,
-                    });
+
+                    const childBlueprint = child.compose();
+                    if (childBlueprint.isFragment) {
+                        return BlueprintBuilder.buildFragment(childBlueprint, {
+                            ...builderContext,
+                            parentElem: elem,
+                        });
+                    } else {
+                        return BlueprintBuilder.buildBlueprint(childBlueprint, {
+                            ...builderContext,
+                            context,
+                            parentElem: elem,
+                        });
+                    }
                 } else {
                     return [child as string];
                 }

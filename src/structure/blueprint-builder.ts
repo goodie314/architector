@@ -1,11 +1,11 @@
 import { Blueprint } from '../blueprints/blueprint';
 import BlueprintContext from './blueprint-context';
-import BlueprintComponent from '../blueprints/blueprint-component';
+import { BlueprintComponent } from '../blueprints/blueprint-component';
 import { BlueprintBuilderOptions } from '../models/blueprint-builder-options';
 import { ErrorMessages } from '../constants/error-messages';
 import { BlueprintRenderable } from '../models/types';
 
-export default class BlueprintBuilder {
+export class BlueprintBuilder {
     private readonly rootComponent: Blueprint | BlueprintComponent;
     private applicationContainer: HTMLElement;
     private blueprintContext: BlueprintContext;

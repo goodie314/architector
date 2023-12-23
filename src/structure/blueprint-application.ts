@@ -5,10 +5,10 @@ import * as esbuild from 'esbuild';
 import { writeFileSafe } from '../util/file-util';
 import { Blueprint } from '../blueprints/blueprint';
 import { BlueprintRenderable } from '../models/types';
-import DefaultHtmlTemplate from '../blueprints/default-html-template';
+import { DefaultHtmlTemplate } from '../blueprints/default-html-template';
 import BlueprintHTMLBuilder from './blueprint-html-builder';
 
-export default class BlueprintApplication {
+export class BlueprintApplication {
     private pageMap: Map<string, string>;
     private outputDirName: string;
     private template: BlueprintRenderable;

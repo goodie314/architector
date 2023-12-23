@@ -1,4 +1,4 @@
-import BlueprintBuilder from '../../src/structure/blueprint-builder';
+import { BlueprintBuilder } from '../../src/structure/blueprint-builder';
 import SimpleHtmlComponent from '../blueprints/test-components/simple-html-component';
 
 describe('Describable page module', () => {

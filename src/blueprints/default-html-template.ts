@@ -1,8 +1,8 @@
-import BlueprintComponent from './blueprint-component';
+import { BlueprintComponent } from './blueprint-component';
 import { Blueprint } from './blueprint';
 import { BlueprintRenderable } from '../models/types';
 
-export default class DefaultHtmlTemplate extends BlueprintComponent {
+export class DefaultHtmlTemplate extends BlueprintComponent {
     private readonly title: string;
     private _language: string;
     private _externalStyles: string[];

@@ -3,9 +3,9 @@
  */
 import fs from 'fs';
 import * as esbuild from 'esbuild';
-import BlueprintApplication from '../../src/structure/blueprint-application';
+import { BlueprintApplication } from '../../src/structure/blueprint-application';
 import * as fileUtil from '../../src/util/file-util';
-import DefaultHtmlTemplate from '../../src/blueprints/default-html-template';
+import { DefaultHtmlTemplate } from '../../src/blueprints/default-html-template';
 import { Blueprint } from '../../src/blueprints/blueprint';
 import BlueprintHTMLBuilder from '../../src/structure/blueprint-html-builder';
 

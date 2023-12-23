@@ -1,7 +1,7 @@
 import { Blueprint } from './blueprint';
 import BlueprintContext from '../structure/blueprint-context';
 
-export default abstract class BlueprintComponent {
+export abstract class BlueprintComponent {
     public context: BlueprintContext;
 
     constructor(componentName = 'default') {

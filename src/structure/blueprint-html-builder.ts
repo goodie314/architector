@@ -1,4 +1,4 @@
-import BlueprintComponent from '../blueprints/blueprint-component';
+import { BlueprintComponent } from '../blueprints/blueprint-component';
 import { Blueprint } from '../blueprints/blueprint';
 
 const selfClosingTags = ['meta'];

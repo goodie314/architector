@@ -1,5 +1,5 @@
 import BlueprintHTMLBuilder from '../../src/structure/blueprint-html-builder';
-import DefaultHtmlTemplate from '../../src/blueprints/default-html-template';
+import { DefaultHtmlTemplate } from '../../src/blueprints/default-html-template';
 
 describe('DefaultHtmlTemplate', () => {
     test('renders default template', () => {

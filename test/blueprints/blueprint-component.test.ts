@@ -1,7 +1,5 @@
 import SimpleHtmlComponent from './test-components/simple-html-component';
-import { Blueprint } from '../../src/blueprints/blueprint';
-import BlueprintContext from '../../src/structure/blueprint-context';
-import BlueprintBuilder from '../../src/structure/blueprint-builder';
+import { BlueprintBuilder } from '../../src/structure/blueprint-builder';
 
 describe('Describable component module', () => {
     describe('Simple html component', () => {

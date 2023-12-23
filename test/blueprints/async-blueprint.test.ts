@@ -1,4 +1,4 @@
-import BlueprintBuilder from '../../src/structure/blueprint-builder';
+import { BlueprintBuilder } from '../../src/structure/blueprint-builder';
 import AsyncBlueprint from '../../src/blueprints/async-blueprint';
 import { Blueprint } from '../../src/blueprints/blueprint';
 

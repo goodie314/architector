@@ -1,4 +1,4 @@
-import BlueprintComponent from '../../../src/blueprints/blueprint-component';
+import { BlueprintComponent } from '../../../src/blueprints/blueprint-component';
 import BlueprintContext from '../../../src/structure/blueprint-context';
 
 export default class CustomContextComponent extends BlueprintComponent {

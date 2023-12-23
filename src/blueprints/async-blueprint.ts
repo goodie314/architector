@@ -1,8 +1,8 @@
-import BlueprintComponent from './blueprint-component';
+import { BlueprintComponent } from './blueprint-component';
 import { Blueprint } from './blueprint';
 import { BlueprintCallback } from '../models/types';
 import ElementRef from './utils/element-ref';
-import BlueprintBuilder from '../structure/blueprint-builder';
+import { BlueprintBuilder } from '../structure/blueprint-builder';
 
 export default class AsyncBlueprint extends BlueprintComponent {
     private promise: Promise<any>;

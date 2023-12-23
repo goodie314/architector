@@ -1,7 +1,7 @@
 import DynamicProp from '../../src/blueprints/utils/dynamic-prop';
 import ListBlueprint from '../../src/blueprints/list-blueprint';
 import { Blueprint } from '../../src/blueprints/blueprint';
-import BlueprintBuilder from '../../src/structure/blueprint-builder';
+import { BlueprintBuilder } from '../../src/structure/blueprint-builder';
 import * as crypto from 'crypto';
 
 const createElementSpy = jest.spyOn(document, 'createElement');

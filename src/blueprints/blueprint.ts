@@ -3,7 +3,7 @@ import ElementRef from './utils/element-ref';
 import { EventHandler } from '../types/event-handler';
 import DynamicProp from './utils/dynamic-prop';
 import { ErrorMessages } from '../constants/error-messages';
-import BlueprintComponent from './blueprint-component';
+import { BlueprintComponent } from './blueprint-component';
 
 export class Blueprint {
     private readonly _tagName: string;

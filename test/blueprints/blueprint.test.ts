@@ -5,7 +5,7 @@ import { ErrorMessages } from '../../src/constants/error-messages';
 import BlueprintContext from '../../src/structure/blueprint-context';
 import CustomContextComponent from './test-components/custom-context-component';
 import BlueprintService from '../../src/structure/blueprint-service';
-import BlueprintBuilder from '../../src/structure/blueprint-builder';
+import { BlueprintBuilder } from '../../src/structure/blueprint-builder';
 
 describe('Blueprint module', () => {
     describe('constructor', () => {

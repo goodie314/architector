@@ -1,8 +1,6 @@
 import ElementRef from '../../../src/blueprints/utils/element-ref';
 import { Blueprint } from '../../../src/blueprints/blueprint';
-import { BlueprintBuilderOptions } from '../../../src/models/blueprint-builder-options';
-import BlueprintContext from '../../../src/structure/blueprint-context';
-import BlueprintBuilder from '../../../src/structure/blueprint-builder';
+import { BlueprintBuilder } from '../../../src/structure/blueprint-builder';
 
 describe('ElementRef module', () => {
     test('getter and setter', (done) => {

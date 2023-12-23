@@ -1,8 +1,8 @@
-import BlueprintComponent from './blueprint-component';
+import { BlueprintComponent } from './blueprint-component';
 import { Blueprint } from './blueprint';
 import DynamicProp from './utils/dynamic-prop';
 import ElementRef from './utils/element-ref';
-import BlueprintBuilder from '../structure/blueprint-builder';
+import { BlueprintBuilder } from '../structure/blueprint-builder';
 import { compareValues } from '../util/value-util';
 
 type BlueprintMapper<T> = (dataElement: T) => Blueprint;

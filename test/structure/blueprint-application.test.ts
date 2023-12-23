@@ -5,6 +5,9 @@ import fs from 'fs';
 import * as esbuild from 'esbuild';
 import BlueprintApplication from '../../src/structure/blueprint-application';
 import * as fileUtil from '../../src/util/file-util';
+import DefaultHtmlTemplate from '../../src/blueprints/default-html-template';
+import { Blueprint } from '../../src/blueprints/blueprint';
+import BlueprintHTMLBuilder from '../../src/structure/blueprint-html-builder';
 
 jest.mock('../../src/util/cwd', () => '/base');
 
@@ -16,6 +19,10 @@ const fileUtilMock = jest.mocked(fileUtil);
 
 jest.mock('esbuild');
 const esBuildMock = jest.mocked(esbuild);
+
+const defaultTemplate = new DefaultHtmlTemplate('test title').bodyElement(
+    new Blueprint('script').attribute('src', 'index.js'),
+);
 
 describe('Describable application module', () => {
     describe('addPage', () => {
@@ -87,8 +94,8 @@ describe('Describable application module', () => {
         });
 
         test('throws error if app has no pages', async () => {
-            const app = new BlueprintApplication('test');
-            await expect(app.build()).rejects.toThrowError(
+            const app = new BlueprintApplication('test title');
+            await expect(app.build()).rejects.toThrow(
                 'Cannot build a describable application without any pages. Call addPage before calling build.',
             );
         });
@@ -96,13 +103,15 @@ describe('Describable application module', () => {
         test('correctly builds one page', async () => {
             fsMock.existsSync.mockReturnValue(true);
 
-            const app = new BlueprintApplication('test');
+            const app = new BlueprintApplication('test title');
             app.addPage('/test', './page.js');
             await app.build();
 
+            const html = BlueprintHTMLBuilder(defaultTemplate);
+
             expect(fileUtilMock.writeFileSafe).toHaveBeenCalledWith(
                 '/base/bundle/test/index.html',
-                'test, index.js',
+                html,
             );
             expect(esBuildMock.build).toHaveBeenCalledWith({
                 entryPoints: ['/base/page.js'],
@@ -116,14 +125,16 @@ describe('Describable application module', () => {
         test('builds one page with custom output directory', async () => {
             fsMock.existsSync.mockReturnValue(true);
 
-            const app = new BlueprintApplication('test')
+            const app = new BlueprintApplication('test title')
                 .outputDir('output')
                 .addPage('/test', './page.js');
             await app.build();
 
+            const html = BlueprintHTMLBuilder(defaultTemplate);
+
             expect(fileUtilMock.writeFileSafe).toHaveBeenCalledWith(
                 '/base/output/test/index.html',
-                'test, index.js',
+                html,
             );
             expect(esBuildMock.build).toHaveBeenCalledWith({
                 entryPoints: ['/base/page.js'],

@@ -1,13 +1,14 @@
 import BlueprintComponent from '../blueprints/blueprint-component';
 import { Blueprint } from '../blueprints/blueprint';
 
+const selfClosingTags = ['meta'];
 export default function BlueprintHTMLBuilder(
     blueprint: Blueprint | BlueprintComponent | string,
 ) {
     function builderHelper(
         blueprint: Blueprint | BlueprintComponent | string,
         tabs = 0,
-    ) {
+    ): string {
         const parts = Array(tabs).fill('\t');
         if (blueprint instanceof String || typeof blueprint === 'string') {
             parts.push(blueprint);
@@ -16,6 +17,11 @@ export default function BlueprintHTMLBuilder(
             blueprint = blueprint.compose();
         }
         blueprint = blueprint as Blueprint;
+        if (blueprint.isFragment) {
+            return blueprint.plans.children
+                .map((child) => builderHelper(child, tabs))
+                .join('\n');
+        }
 
         parts.push(`<${blueprint.tagName}`);
         const plans = blueprint.plans;
@@ -27,9 +33,19 @@ export default function BlueprintHTMLBuilder(
             parts.push(` class="${plans.classNames.join(' ')}"`);
         }
         Object.entries(plans.attributes)
-            .map(([key, value]) => ` ${key}="${value}"`)
+            .map(([key, value]) => {
+                return value ? ` ${key}="${value}"` : ` ${key}`;
+            })
             .forEach((attribute) => parts.push(attribute));
 
+        if (blueprint.tagName.toLowerCase() === '!doctype') {
+            parts.push('>');
+            return parts.join('');
+        }
+        if (selfClosingTags.includes(blueprint.tagName)) {
+            parts.push('/>');
+            return parts.join('');
+        }
         parts.push('>');
 
         if (plans.children.length) {

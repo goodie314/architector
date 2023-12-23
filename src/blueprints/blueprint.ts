@@ -78,7 +78,7 @@ export class Blueprint {
         return this;
     }
 
-    attribute(name: string, value: string | DynamicProp<string>) {
+    attribute(name: string, value?: string | DynamicProp<string>) {
         if (this._plans.attributes[name]) {
             throw new Error(
                 ErrorMessages.Blueprint.duplicateAttributeKey(name),

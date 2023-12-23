@@ -3,16 +3,26 @@ import fs from 'fs';
 import cwd from '../util/cwd';
 import * as esbuild from 'esbuild';
 import { writeFileSafe } from '../util/file-util';
+import { Blueprint } from '../blueprints/blueprint';
+import { BlueprintRenderable } from '../models/types';
+import DefaultHtmlTemplate from '../blueprints/default-html-template';
+import BlueprintHTMLBuilder from './blueprint-html-builder';
 
 export default class BlueprintApplication {
-    private readonly title: string;
     private pageMap: Map<string, string>;
     private outputDirName: string;
+    private template: BlueprintRenderable;
 
     constructor(title: string) {
-        this.title = title;
         this.pageMap = new Map();
         this.outputDirName = 'bundle';
+        this.template = new DefaultHtmlTemplate(title).bodyElement(
+            new Blueprint('script').attribute('src', 'index.js'),
+        );
+    }
+
+    addDefaultHtml(template: BlueprintRenderable) {
+        this.template = template;
     }
 
     addPage(url: string, describablePageLocation: string) {
@@ -50,20 +60,13 @@ export default class BlueprintApplication {
                 'Cannot build a describable application without any pages. Call addPage before calling build.',
             );
         }
-        const template = fs
-            .readFileSync(path.join(__dirname, '../template/default.html'))
-            .toString();
+        const template = BlueprintHTMLBuilder(this.template);
 
         const builds = Array.from(this.pageMap.keys()).map((url) => {
             const location = this.pageMap.get(url);
             const outputLocation = path.join(cwd, this.outputDirName, url);
 
-            writeFileSafe(
-                path.join(outputLocation, 'index.html'),
-                template
-                    .replace('{{title}}', this.title)
-                    .replace('{{scriptSource}}', 'index.js'),
-            );
+            writeFileSafe(path.join(outputLocation, 'index.html'), template);
 
             return esbuild.build({
                 entryPoints: [location],

@@ -11,7 +11,8 @@
     "test": "jest test/.*.ts",
     "build": "npm run buildTypescript && npm run buildApplicationUtil",
     "buildTypescript": "tsc",
-    "buildApplicationUtil": "node ./build-application-util.mjs"
+    "buildApplicationUtil": "node ./build-application-util.mjs",
+    "prepublish": "npm build"
   },
   "keywords": [],
   "author": "",

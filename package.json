@@ -12,7 +12,7 @@
     "build": "npm run buildTypescript && npm run buildApplicationUtil",
     "buildTypescript": "tsc",
     "buildApplicationUtil": "node ./build-application-util.mjs",
-    "prepublish": "npm build"
+    "prepublish": "npm run build"
   },
   "keywords": [],
   "author": "",

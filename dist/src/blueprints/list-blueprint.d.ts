@@ -1,8 +1,8 @@
 import { BlueprintComponent } from './blueprint-component';
 import { Blueprint } from './blueprint';
 import DynamicProp from './utils/dynamic-prop';
-declare type BlueprintMapper<T> = (dataElement: T) => Blueprint;
-declare type IdMapper<T> = (dataElement: T) => string;
+type BlueprintMapper<T> = (dataElement: T) => Blueprint;
+type IdMapper<T> = (dataElement: T) => string;
 export default class ListBlueprint<T = any> extends BlueprintComponent {
     private readonly blueprintMapper;
     private readonly idMapper;

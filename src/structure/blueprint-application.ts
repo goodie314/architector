@@ -1,5 +1,5 @@
-import path from 'path';
-import fs from 'fs';
+import * as path from 'path';
+import * as fs from 'fs';
 import cwd from '../util/cwd';
 import * as esbuild from 'esbuild';
 import { writeFileSafe } from '../util/file-util';

@@ -27,8 +27,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BlueprintApplication = void 0;
-const path_1 = __importDefault(require("path"));
-const fs_1 = __importDefault(require("fs"));
+const path = __importStar(require("path"));
+const fs = __importStar(require("fs"));
 const cwd_1 = __importDefault(require("../util/cwd"));
 const esbuild = __importStar(require("esbuild"));
 const file_util_1 = require("../util/file-util");
@@ -52,8 +52,8 @@ class BlueprintApplication {
             throw new Error(`URL ${url} is already mapped`);
         }
         this.validateURL(url);
-        const pagePath = path_1.default.join(cwd_1.default, describablePageLocation);
-        if (!fs_1.default.existsSync(pagePath)) {
+        const pagePath = path.join(cwd_1.default, describablePageLocation);
+        if (!fs.existsSync(pagePath)) {
             throw new Error(`Could not find describable page at ${pagePath}`);
         }
         this.pageMap.set(url, pagePath);
@@ -78,14 +78,14 @@ class BlueprintApplication {
         const template = (0, blueprint_html_builder_1.default)(this.template);
         const builds = Array.from(this.pageMap.keys()).map((url) => {
             const location = this.pageMap.get(url);
-            const outputLocation = path_1.default.join(cwd_1.default, this.outputDirName, url);
-            (0, file_util_1.writeFileSafe)(path_1.default.join(outputLocation, 'index.html'), template);
+            const outputLocation = path.join(cwd_1.default, this.outputDirName, url);
+            (0, file_util_1.writeFileSafe)(path.join(outputLocation, 'index.html'), template);
             return esbuild.build({
                 entryPoints: [location],
                 bundle: true,
                 minify: true,
                 logLevel: 'info',
-                outfile: path_1.default.join(outputLocation, 'index.js'),
+                outfile: path.join(outputLocation, 'index.js'),
             });
         });
         await Promise.all(builds);

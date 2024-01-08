@@ -112,6 +112,7 @@
   ],
   "exclude": [
     "test",
-    "node_modules"
+    "node_modules",
+    "./src/structure/blueprint-application.ts"
   ]
 }

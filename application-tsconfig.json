@@ -1,7 +1,12 @@
 {
-  "extends": "./tsconfig.json",
-  "files": ["src/structure/describable-application.ts"],
+  "files": ["./src/structure/blueprint-application.ts"],
+  "exclude": [
+    "node_modules"
+  ],
   "compilerOptions": {
-    "module": "es2022"
+    "module": "nodenext",
+    "moduleResolution": "node",
+    "target": "es2022",
+    "outDir": "./dist"
   }
 }

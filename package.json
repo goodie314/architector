@@ -1,6 +1,6 @@
 {
-  "name": "architector",
-  "version": "0.1.0",
+  "name": "@goodie314/architector",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,10 @@
     "/dist"
   ],
   "scripts": {
-    "test": "jest test/.*.ts"
+    "test": "jest test/.*.ts",
+    "build": "npm run buildTypescript && npm run buildApplicationUtil",
+    "buildTypescript": "tsc",
+    "buildApplicationUtil": "node ./build-application-util.mjs"
   },
   "keywords": [],
   "author": "",

@@ -1,1 +1,1 @@
-export declare type EventHandler = (currentTarget: Element, event: Event) => any;
+export type EventHandler = (currentTarget: Element, event: Event) => any;

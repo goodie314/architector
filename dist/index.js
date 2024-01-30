@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DefaultHtmlTemplate = exports.Blueprint = exports.BlueprintComponent = exports.BlueprintBuilder = exports.BlueprintApplication = void 0;
-var blueprint_application_1 = require("./src/structure/blueprint-application");
-Object.defineProperty(exports, "BlueprintApplication", { enumerable: true, get: function () { return blueprint_application_1.BlueprintApplication; } });
+exports.DefaultHtmlTemplate = exports.Blueprint = exports.BlueprintComponent = exports.BlueprintBuilder = void 0;
 var blueprint_builder_1 = require("./src/structure/blueprint-builder");
 Object.defineProperty(exports, "BlueprintBuilder", { enumerable: true, get: function () { return blueprint_builder_1.BlueprintBuilder; } });
 var blueprint_component_1 = require("./src/blueprints/blueprint-component");

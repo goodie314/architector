@@ -4,9 +4,10 @@
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": [
-    "/dist"
-  ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./blueprint-application": "./dist/blueprint-application.js"
+  },
   "scripts": {
     "test": "jest test/.*.ts",
     "build": "npm run buildTypescript && npm run buildApplicationUtil",
@@ -25,7 +26,7 @@
     "ts-jest": "^29.1.1",
     "typescript": "^5.1.6"
   },
-  "dependencies": {
+  "peerDependencies": {
     "esbuild": "^0.19.9"
   }
 }

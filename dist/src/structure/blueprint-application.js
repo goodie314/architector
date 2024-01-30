@@ -84,7 +84,7 @@ class BlueprintApplication {
                 entryPoints: [location],
                 bundle: true,
                 minify: true,
-                logLevel: 'info',
+                logLevel: 'verbose',
                 outfile: path.join(outputLocation, 'index.js'),
             });
         });

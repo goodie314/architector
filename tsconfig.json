@@ -113,6 +113,5 @@
   "exclude": [
     "test",
     "node_modules",
-    "./src/structure/blueprint-application.ts"
   ]
 }

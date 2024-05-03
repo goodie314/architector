@@ -1,18 +1,17 @@
 {
   "name": "@goodie314/architector",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
-    "./blueprint-application": "./dist/blueprint-application.js"
+    "./models": "./dist/models"
   },
   "scripts": {
     "test": "jest test/.*.ts",
-    "build": "npm run buildTypescript && npm run buildApplicationUtil",
+    "build": "npm run buildTypescript",
     "buildTypescript": "tsc",
-    "buildApplicationUtil": "node ./build-application-util.mjs",
     "prepublish": "npm run build"
   },
   "keywords": [],
@@ -25,8 +24,5 @@
     "prettier": "^3.1.0",
     "ts-jest": "^29.1.1",
     "typescript": "^5.1.6"
-  },
-  "peerDependencies": {
-    "esbuild": "^0.19.9"
   }
 }
